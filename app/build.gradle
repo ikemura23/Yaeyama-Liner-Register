@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.ikmr.banbara23.yaeyama_liner_register"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        debug {
+            buildConfigField "String", "NCMB_APPLICATION_ID", "\"${project.property("NcmbApplicationKeyDebug")}\""
+            buildConfigField "String", "NCMB_CLIENT_KEY", "\"${project.property("NcmbClientKeydebug")}\""
+        }
+        release {
+            buildConfigField "String", "NCMB_APPLICATION_ID", "\"${project.property("NcmbApplicationKeyRelease")}\""
+            buildConfigField "String", "NCMB_CLIENT_KEY", "\"${project.property("NcmbClientKeyRelease")}\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'com.google.code.gson:gson:2.4'
+    compile files('libs/NCMB.jar')
+}
