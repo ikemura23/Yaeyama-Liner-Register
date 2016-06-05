@@ -212,7 +212,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                         // 取得成功
                         Log.d("MainActivity", "DreamList:onNext");
                         Log.d("YaeyamaLinerRegisterSer", "result:" + result);
-                         saveDreamListResult(result);
+                        saveDreamListResult(result);
                     }
                 });
     }

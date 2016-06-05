@@ -51,9 +51,6 @@ public class DreamListParser {
         ul.child(ul.children().size() - 1);
         result.setUpdateTime(getUpdateTime(ul));
 
-        //
-        // result.setUpdateTime(getUpdateTime(tr));
-        //
         ArrayList<Liner> mLiners = new ArrayList<>();
         //
         ArrayList<Port> array = getPortArray();
@@ -112,52 +109,84 @@ public class DreamListParser {
                 continue;
             }
 
-            // テキストを取得 うまく取れてれば、通常運行 となる
-            String comment = span.get(0).text();
-            liner.setText(comment);
+            // ステータスを取得
+            liner.setStatus(parsStatus(span));
 
-            // クラス名でステータス判定
-            // 運休
-            if (span.hasClass("sus")) {
-                liner.setStatus(Status.SUSPEND);
-                return liner;
-            }
-            // 臨時便にて運航
-            if (span.hasClass("sub")) {
-                liner.setStatus(Status.NORMAL);
-                return liner;
-            }
+            // コメントを取得
+            liner.setText(parsComment(span, li));
 
-            // コメントでステータス判定
-            // ステータス決め
-            if (comment.equals("通常運航")) {
-                liner.setStatus(Status.NORMAL);
-            }
-            else if (comment.equals("臨時便にて運航")) {
-                liner.setStatus(Status.NORMAL);
-            }
-            else if (comment.equals("欠航")) {
-                liner.setStatus(Status.CANCEL);
-            }
-            else if (comment.equals("全便欠航")) {
-                liner.setStatus(Status.CANCEL);
-            }
-            else if (comment.equals("運休日")) {
-                liner.setStatus(Status.SUSPEND);
-            }
-            else if (comment.equals("運休")) {
-                liner.setStatus(Status.SUSPEND);
-            }
-            else {
-                liner.setStatus(Status.CAUTION);
-            }
-
+            // Linerに値がちゃんと入っていればforから抜ける
             if (liner.getPort() != null && liner.getText() != null) {
                 return liner;
             }
         }
 
         return liner;
+    }
+
+    private static Status parsStatus(Elements span) {
+        try {
+
+            // テキストを取得 うまく取れてれば、通常運行 となる
+            String statusText = span.get(0).text();
+
+            // クラス名でステータス判定
+            // 運休
+            if (span.hasClass("sus")) {
+                return Status.SUSPEND;
+            }
+            // 臨時便にて運航
+            if (span.hasClass("sub")) {
+                return Status.NORMAL;
+            }
+
+            // コメントでステータス判定
+            // ステータス決め
+            if (statusText.equals("通常運航")) {
+                return Status.NORMAL;
+            }
+            else if (statusText.equals("臨時便にて運航")) {
+                return Status.NORMAL;
+            }
+            else if (statusText.equals("欠航")) {
+                return Status.CANCEL;
+            }
+            else if (statusText.equals("全便欠航")) {
+                return Status.CANCEL;
+            }
+            else if (statusText.equals("運休日")) {
+                return Status.SUSPEND;
+            }
+            else if (statusText.equals("運休")) {
+                return Status.SUSPEND;
+            }
+            else {
+                return Status.CAUTION;
+            }
+        } catch (Exception ex) {
+
+        } finally {
+            return null;
+        }
+    }
+
+    /**
+     * コメントを取得
+     *
+     * @param span
+     * @param li リストタグ
+     * @return
+     */
+    private static String parsComment(Elements span, Element li) {
+        if (li == null) {
+            return "";
+        }
+        if (li.children().size() < 2) {
+            return "";
+        }
+        return span.get(0).text()
+                + " "
+                + li.children().get(1).text();
     }
 
     /**
@@ -171,48 +200,6 @@ public class DreamListParser {
             return null;
         }
         return ParseUtil.getStrContainPort(element.text());
-    }
-
-    /**
-     * 運航状況を返す
-     *
-     * @param td タグ
-     * @return 運航状況
-     */
-    private static Liner createLiner(Element td, Port port) {
-        if (td == null) {
-            return null;
-        }
-        Liner liner = new Liner();
-        liner.setPort(port);
-        liner.setText(td.text());
-        liner.setStatus(getStatus(td.text()));
-
-        return liner;
-    }
-
-    /**
-     * 文字からステータスを判定して返す
-     * 
-     * @param text 運航状況の文字
-     * @return 運航状況ステータス
-     */
-    private static Status getStatus(String text) {
-        if (text.equals("通常運航")) {
-            return Status.NORMAL;
-        }
-        else if (text.equals("欠航")) {
-            return Status.CANCEL;
-        }
-        else if (text.equals("運休日")) {
-            return Status.SUSPEND;
-        }
-        else if (text.equals("運休")) {
-            return Status.SUSPEND;
-        }
-        else {
-            return Status.CAUTION;
-        }
     }
 
     /**
