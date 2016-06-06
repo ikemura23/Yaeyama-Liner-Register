@@ -1,3 +1,4 @@
+
 package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.content.Context;
@@ -8,15 +9,11 @@ import com.ikmr.banbara23.yaeyama_liner_register.api.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.api.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.api.YkfStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.parser.WeatherParser;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -42,9 +39,9 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             Log.d("YaeyamaLinerRegisterSer", "execTask");
-//            startAnneiListQuery();
-//            startYkfListQuery();
-//            startDreamListQuery();
+            // startAnneiListQuery();
+            // startYkfListQuery();
+            // startDreamListQuery();
             try {
                 parsWeather();
             } catch (Exception e) {
@@ -54,7 +51,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
-//        makeNextPlan();
+        // makeNextPlan();
     }
 
     private void parsWeather() {
@@ -62,13 +59,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             @Override
             public void run() {
                 try {
-                    Document document = Jsoup.connect("http://weather.yahoo.co.jp/weather/jp/47/9410.html").get();
-                    Weather weather = new Weather();
-                    weather.setWeather(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > p.pict").text());
-                    weather.setTemperature(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > ul").text());
-                    weather.setWind(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > dl > dd:nth-child(2)").text());
-                    weather.setWave(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > dl > dd:nth-child(4)").text());
-
+                    Weather weather = WeatherParser.pars("http://weather.yahoo.co.jp/weather/jp/47/9410.html");
                     String weatherJson = new Gson().toJson(weather);
                     NCMBObject obj = new NCMBObject("Weather");
                     obj.put("weather", weatherJson);
@@ -85,10 +76,9 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                // awesome execution
             }
         });
         thread.start();
