@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.content.Context;
@@ -14,16 +13,21 @@ import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
+    public static BasePeriodicService activeService;
+
     public YaeyamaLinerRegisterService() {
     }
-
-    public static BasePeriodicService activeService;
 
     @Override
     protected long getIntervalMS() {
@@ -38,14 +42,56 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             Log.d("YaeyamaLinerRegisterSer", "execTask");
-            startAnneiListQuery();
-            startYkfListQuery();
-            startDreamListQuery();
+//            startAnneiListQuery();
+//            startYkfListQuery();
+//            startDreamListQuery();
+            try {
+                parsWeather();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
-        makeNextPlan();
+//        makeNextPlan();
+    }
+
+    private void parsWeather() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Document document = Jsoup.connect("http://weather.yahoo.co.jp/weather/jp/47/9410.html").get();
+                    Weather weather = new Weather();
+                    weather.setWeather(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > p.pict").text());
+                    weather.setTemperature(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > ul").text());
+                    weather.setWind(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > dl > dd:nth-child(2)").text());
+                    weather.setWave(document.select("#main > div.forecastCity > table > tbody > tr > td:nth-child(1) > div > dl > dd:nth-child(4)").text());
+
+                    String weatherJson = new Gson().toJson(weather);
+                    NCMBObject obj = new NCMBObject("Weather");
+                    obj.put("weather", weatherJson);
+
+                    obj.saveInBackground(new DoneCallback() {
+                        @Override
+                        public void done(NCMBException e) {
+                            if (e == null) {
+                                // 保存成功
+                                Log.d("MainActivity", "weatherJson 送信成功");
+                            } else {
+                                // 保存失敗
+                                Log.d("MainActivity", "weatherJson 送信失敗 :" + e);
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // awesome execution
+            }
+        });
+        thread.start();
     }
 
     @Override
@@ -57,13 +103,13 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
      * もし起動していたら，常駐を解除する
      */
     public void stopResidentIfActive(Context context) {
-        if (activeService != null)
-        {
+        if (activeService != null) {
             activeService.stopResident(context);
         }
     }
 
     // 安栄 一覧 ===================================================================
+
     /**
      * 安栄一覧の処理開始
      */
@@ -128,6 +174,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
     // 八重山観光フェリー 一覧
     // ===================================================================
+
     /**
      * 八重山観光フェリーAPIを呼び出す
      */
@@ -185,6 +232,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
     // ドリーム観光 一覧
     // ===================================================================
+
     /**
      * ドリーム観光 一覧の処理開始
      */
