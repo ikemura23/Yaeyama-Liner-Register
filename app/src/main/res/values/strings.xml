@@ -248,5 +248,6 @@
     <string name="pref_annei_result_key">pref_annei_result</string>
     <string name="pref_ykf_result_key">pref_ykf_result</string>
     <string name="pref_dream_result_key">pref_dream_result</string>
+    <string name="pref_weather_key">pref_weather_key</string>
 
 </resources>
