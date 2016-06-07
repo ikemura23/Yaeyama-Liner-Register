@@ -9,8 +9,8 @@ import com.ikmr.banbara23.yaeyama_liner_register.api.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.api.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.api.YkfStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.parser.WeatherParser;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
+import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -42,62 +42,11 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             // startAnneiListQuery();
             // startYkfListQuery();
             // startDreamListQuery();
-            try {
-                parsWeather();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            WeatherController.start();
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
         // makeNextPlan();
-    }
-
-    private void parsWeather() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Weather weather = WeatherParser.pars("http://weather.yahoo.co.jp/weather/jp/47/9410.html");
-                    final String weatherJson = new Gson().toJson(weather);
-                    final String key = getString(R.string.pref_weather_key);
-                    // 前回の値と比較
-                    if (isEqualForLastTime(weatherJson, key)) {
-                        // 前回の結果と同じ値ならAPI送信しない
-                        Log.d("YaeyamaLinerRegisterSer", "前回と同じ天気");
-                        return;
-                    }
-
-                    NCMBObject obj = new NCMBObject("Weather");
-                    obj.put("weather", weatherJson);
-                    obj.saveInBackground(new DoneCallback() {
-                        @Override
-                        public void done(NCMBException e) {
-                            if (e == null) {
-                                // 保存成功
-                                Log.d("MainActivity", "weatherJson 送信成功");
-                                PreferenceUtils.put(key, weatherJson);
-                            } else {
-                                // 保存失敗
-                                Log.d("MainActivity", "weatherJson 送信失敗 :" + e);
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-    }
-
-    private boolean isEqualForLastTime(String json, String key) {
-        String lastTimeString = PreferenceUtils.get(key, "");
-        if (lastTimeString.equals(json)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
