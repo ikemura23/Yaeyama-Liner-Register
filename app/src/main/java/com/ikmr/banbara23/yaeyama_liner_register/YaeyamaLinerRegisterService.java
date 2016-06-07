@@ -39,14 +39,14 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             Log.d("YaeyamaLinerRegisterSer", "execTask");
-            // startAnneiListQuery();
-            // startYkfListQuery();
-            // startDreamListQuery();
+            startAnneiListQuery();
+            startYkfListQuery();
+            startDreamListQuery();
             WeatherController.start();
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
-        // makeNextPlan();
+        makeNextPlan();
     }
 
     @Override
