@@ -164,9 +164,7 @@ public class DreamListParser {
                 return Status.CAUTION;
             }
         } catch (Exception ex) {
-
-        } finally {
-            return null;
+            return Status.CAUTION;
         }
     }
 
