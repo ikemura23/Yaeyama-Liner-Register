@@ -1,8 +1,6 @@
 
 package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
-import android.util.Log;
-
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
@@ -46,7 +44,6 @@ public class DreamListParser {
         if (isEmptyElement(ul)) {
             return null;
         }
-        Log.d("DreamListParser", "ul:" + ul);
 
         // 更新日時
         ul.child(ul.children().size() - 1);
@@ -65,7 +62,6 @@ public class DreamListParser {
 
     private static String getTitle(Document doc) {
         Element ul = doc.getElementById("ticker_area");
-        Log.d("DreamListParser", "タイトル" + ul.text());
         return ul.text();
     }
 
