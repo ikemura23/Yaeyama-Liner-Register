@@ -22,6 +22,22 @@ public class Record {
         this.time = time;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getStatusComment() {
+        return StatusComment;
+    }
+
+    public void setStatusComment(String statusComment) {
+        StatusComment = statusComment;
+    }
+
     @Override
     public String toString() {
         return "Record{" +

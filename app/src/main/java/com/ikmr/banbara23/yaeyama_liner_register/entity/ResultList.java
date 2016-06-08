@@ -13,4 +13,11 @@ public class ResultList extends BaseResult {
     public void setLiners(ArrayList<Liner> liners) {
         this.liners = liners;
     }
+
+    @Override
+    public String toString() {
+        return "ResultList{" +
+                "liners=" + liners +
+                '}';
+    }
 }
