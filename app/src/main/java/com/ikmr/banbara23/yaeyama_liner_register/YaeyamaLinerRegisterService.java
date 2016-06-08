@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
@@ -40,7 +40,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         try {
             Log.d("YaeyamaLinerRegisterSer", "execTask");
             startAnneiListQuery();
-            startYkfListQuery();
+            YkfController.start();
             startDreamListQuery();
             WeatherController.start();
         } catch (Exception e) {
@@ -126,65 +126,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             }
         });
     }
-
-    // 八重山観光フェリー 一覧
-    // ===================================================================
-
-    /**
-     * 八重山観光フェリーAPIを呼び出す
-     */
-    private void startYkfListQuery() {
-
-        YkfStatusListApi.request(getString(R.string.url_ykf_list))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Result>() {
-                    @Override
-                    public void onCompleted() {
-                        // 完了
-                        Log.d("MainActivity", "YkfList:onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // 失敗
-                        Log.d("MainActivity", "YkfList:onError");
-                        Log.d("MainActivity", "YkfList:e:" + e);
-                    }
-
-                    @Override
-                    public void onNext(Result result) {
-                        Log.d("MainActivity", "YkfList:onNext");
-                        // 取得成功
-                        saveYkfListResult(result);
-                    }
-                });
-    }
-
-    private void saveYkfListResult(final Result result) {
-        if (isEqualForLastTimeResult(result, getString(R.string.pref_ykf_result_key))) {
-            return;
-        }
-
-        NCMBObject obj = new NCMBObject(getString(R.string.NCMB_ykf_table));
-        obj.put("result_json", convertResultToString(result));
-
-        obj.saveInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                if (e == null) {
-                    // 保存成功
-                    Log.d("MainActivity", "YkfList 保存成功");
-                    Log.d("MainActivity", "result:" + result.toString());
-                    saveResultToPref(result, getString(R.string.pref_ykf_result_key));
-                } else {
-                    // 保存失敗
-                    Log.d("MainActivity", "YkfList 保存失敗 :" + e);
-                }
-            }
-        });
-    }
-
     // ドリーム観光 一覧
     // ===================================================================
 
@@ -194,8 +135,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
     private void startDreamListQuery() {
 
         DreamStatusListApi.request(getString(R.string.url_dream_list))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<Result>() {
                     @Override
                     public void onCompleted() {
