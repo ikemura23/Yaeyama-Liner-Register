@@ -44,6 +44,7 @@ public class YkfListApiClient {
                             subscriber.onNext(document);
                             subscriber.onCompleted();
                         } catch (IOException e) {
+                            Log.e("YkfListApiClient", e.getMessage());
                             subscriber.onError(e);
                         }
                     }
@@ -72,12 +73,13 @@ public class YkfListApiClient {
             public void done(NCMBException e) {
                 if (e == null) {
                     // 保存成功
-                    Log.d("YkfListApiClient", "YkfList 保存成功");
+                    Log.d("YkfListApiClient", "YkfList 送信成功");
                     Log.d("YkfListApiClient", "result:" + result.toString());
                     PreferenceUtils.put(key, json);
                 } else {
+                    Log.e("YkfListApiClient", e.getMessage());
                     // 保存失敗
-                    Log.d("YkfListApiClient", "YkfList 保存失敗 :" + e);
+                    Log.d("YkfListApiClient", "YkfList 送信失敗 :" + e);
                 }
             }
         });

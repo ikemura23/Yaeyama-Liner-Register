@@ -27,7 +27,7 @@
     <string name="url_annei_detail">http://www.aneikankou.co.jp/timetables</string>
 
     <!--八重山観光フェリー-->
-    <string name="url_ykf_list">http://sync5-cnsl.digitalstage.jp/sync/docs.action?s=document%3A1s9n6naZmRe88T4iHVVZkHfyOgyci5qvWMkuaySZJFM0</string>
+    <string name="url_ykf_list">http://www.yaeyama.co.jp/</string>
     <string name="url_ykf_facebook">https://www.facebook.com/yaekan.ishigaki</string>
 
     <!--ドリーム観光-->

@@ -5,17 +5,15 @@ import android.util.Log;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- *  ykfコントローラー
+ * ykfコントローラー
  */
 public class YkfController {
     public static void start() {
 
         YkfListApiClient.request()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<Result>() {
                     @Override
