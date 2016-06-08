@@ -15,8 +15,8 @@ import rx.functions.Func1;
 /**
  * 指定した安栄の詳細を取得
  */
-public class AnneiStatusDetailApi {
-    public static Observable<String> request(final String url) {
+public class AnneiDetailApiClient {
+    public static Observable<String> get(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override

@@ -265,36 +265,4 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         PreferenceUtils.put(key, convertResultToString(result));
     }
 
-    // // 安栄 詳細
-    // ===================================================================
-    // /**
-    // * 安栄詳細の処理開始
-    // */
-    // private void startAnneiDetailQuery() {
-    // mCompositeSubscription.add(
-    // AnneiStatusDetailApi.request(getString(R.string.url_annei_detail))
-    // .observeOn(AndroidSchedulers.mainThread())
-    // .subscribeOn(Schedulers.newThread())
-    // .subscribe(new Subscriber<String>() {
-    // @Override
-    // public void onCompleted() {
-    // // 完了
-    // Log.d("MainActivity", "AnneiDetail:onCompleted");
-    // }
-    //
-    // @Override
-    // public void onError(Throwable e) {
-    // Log.d("MainActivity", "AnneiDetail:onError");
-    // Log.d("MainActivity", "AnneiDetail:e:" + e);
-    // }
-    //
-    // @Override
-    // public void onNext(String s) {
-    // // 値うけとる
-    // Log.d("MainActivity", "AnneiList:onNext");
-    // }
-    // })
-    // );
-    // }
-
 }
