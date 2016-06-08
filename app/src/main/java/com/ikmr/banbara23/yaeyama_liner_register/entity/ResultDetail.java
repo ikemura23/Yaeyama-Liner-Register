@@ -3,11 +3,8 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity;
 /**
  * 運行詳細クラス
  */
-public class ResultDetail {
-    Company company;
-    Port port;
-    Status status;
-    String statusText;
+public class ResultDetail extends BaseResult {
+    
     LinerRecordInfo linerRecordInfo;
     public ResultDetail() {
     }
