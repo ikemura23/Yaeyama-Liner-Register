@@ -1,10 +1,10 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
 /**
  * 運航ルートのEnumクラス
  */
 public enum Port {
+    ISHIGAKI("石垣島", "石垣", "ishigaki"),
     HATERUMA("波照間島", "波照間", "hateruma"),
     UEHARA("上原(西表島)", "上原", "uehara"),
     OOHARA("大原(西表島)", "大原", "oohara"),
@@ -17,34 +17,30 @@ public enum Port {
     SUPER_DREAM("スーパードリーム", "スーパードリーム", "super");
 
     // 表示名
-    private String port;
+    private String name;
     // 検索用の名前
-    private String portSimple;
+    private String simpleName;
     // 英語名
     private String portEn;
 
     /**
      * コンストラクタ
      *
-     * @param port
-     * @param portSimple
+     * @param name
+     * @param simpleName
      */
-    Port(String port, String portSimple, String portEn) {
-        this.port = port;
-        this.portSimple = portSimple;
+    Port(String name, String simpleName, String portEn) {
+        this.name = name;
+        this.simpleName = simpleName;
         this.portEn = portEn;
     }
 
-    public String getValue() {
-        return port;
+    public String getName() {
+        return name;
     }
 
-    public String getPort() {
-        return port;
-    }
-
-    public String getPortSimple() {
-        return portSimple;
+    public String getSimpleName() {
+        return simpleName;
     }
 
     public String getPortEn() {

@@ -113,7 +113,7 @@ public class AnneiListParser {
                 continue;
             }
             // spanタグのテキストが港と一致しているか？
-            if (spanPort.text().contains(port.getPortSimple())) {
+            if (spanPort.text().contains(port.getSimpleName())) {
 
                 // 運航ステータスの判定-------------------------------
                 if (spanStatus.hasClass("circle")) {

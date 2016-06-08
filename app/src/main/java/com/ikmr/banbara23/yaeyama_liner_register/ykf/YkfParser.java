@@ -102,7 +102,7 @@ public class YkfParser {
             if (element == null || element.children().size() < 1) {
                 continue;
             }
-            if (element.child(0).text().contains(port.getPortSimple())) {
+            if (element.child(0).text().contains(port.getSimpleName())) {
                 liner.setStatus(getStatus(element.child(1).text()));
                 liner.setText(element.child(2).text().replace("\u00a0", "").trim());
                 return liner;
