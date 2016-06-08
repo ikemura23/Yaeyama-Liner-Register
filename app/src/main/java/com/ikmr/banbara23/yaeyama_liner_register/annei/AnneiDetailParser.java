@@ -1,5 +1,5 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.parser;
+package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

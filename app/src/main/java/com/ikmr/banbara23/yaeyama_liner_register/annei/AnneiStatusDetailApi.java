@@ -1,8 +1,7 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.api;
+package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
-import com.ikmr.banbara23.yaeyama_liner_register.parser.AnneiDetailParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

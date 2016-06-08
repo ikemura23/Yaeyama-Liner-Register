@@ -1,9 +1,8 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.api;
+package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.parser.YkfParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

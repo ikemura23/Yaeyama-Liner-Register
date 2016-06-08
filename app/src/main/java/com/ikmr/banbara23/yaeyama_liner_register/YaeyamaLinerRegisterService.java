@@ -5,9 +5,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.ikmr.banbara23.yaeyama_liner_register.api.AnneiStatusListApi;
-import com.ikmr.banbara23.yaeyama_liner_register.api.DreamStatusListApi;
-import com.ikmr.banbara23.yaeyama_liner_register.api.YkfStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;

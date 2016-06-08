@@ -1,5 +1,5 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.parser;
+package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import android.util.Log;
 

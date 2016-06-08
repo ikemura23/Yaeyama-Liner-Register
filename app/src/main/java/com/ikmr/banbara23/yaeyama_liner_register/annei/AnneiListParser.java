@@ -1,5 +1,5 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.parser;
+package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -8,6 +8,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

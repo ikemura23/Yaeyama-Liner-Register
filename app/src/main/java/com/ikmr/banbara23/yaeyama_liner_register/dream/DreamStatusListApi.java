@@ -1,9 +1,9 @@
 
-package com.ikmr.banbara23.yaeyama_liner_register.api;
+package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.parser.DreamStatusParser;
+import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamListParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,17 +17,15 @@ import rx.functions.Func1;
 /**
  * ドリーム観光の運航一覧を取得するapiクラス
  */
-public class DreamStatusValueApi {
+public class DreamStatusListApi {
 
     /**
      * RxAndroidを利用
      * 
      * @return Observable<Result>
      * @param url 一覧url
-     * @param result
      */
-    ;
-    public static Observable<Result> request(final String url, final Result result) {
+    public static Observable<Result> request(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
@@ -45,7 +43,7 @@ public class DreamStatusValueApi {
                 .map(new Func1<Document, Result>() {
                     @Override
                     public Result call(Document document) {
-                        return DreamStatusParser.pars(document,result);
+                        return DreamListParser.pars(document);
                     }
                 });
     }
