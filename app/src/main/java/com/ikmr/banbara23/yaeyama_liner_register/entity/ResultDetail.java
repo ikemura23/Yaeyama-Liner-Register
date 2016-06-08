@@ -1,15 +1,18 @@
+
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
 /**
  * 運行詳細クラス
  */
 public class ResultDetail extends BaseResult {
-    
+
     LinerRecordInfo linerRecordInfo;
+
     public ResultDetail() {
     }
 
-    // ゲッターセッター /////////////////////////////////////////////////////////////////
+    // ゲッターセッター
+    // /////////////////////////////////////////////////////////////////
     public Company getCompany() {
         return company;
     }
@@ -49,7 +52,6 @@ public class ResultDetail extends BaseResult {
     public void setLinerRecordInfo(LinerRecordInfo linerRecordInfo) {
         this.linerRecordInfo = linerRecordInfo;
     }
-
 
     @Override
     public String toString() {
