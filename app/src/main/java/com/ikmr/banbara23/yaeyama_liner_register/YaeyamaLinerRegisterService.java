@@ -127,6 +127,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             }
         });
     }
+
     // ドリーム観光 一覧
     // ===================================================================
 
