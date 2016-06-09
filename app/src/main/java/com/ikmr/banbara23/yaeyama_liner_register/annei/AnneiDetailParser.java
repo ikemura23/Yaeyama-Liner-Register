@@ -116,6 +116,21 @@ public class AnneiDetailParser {
 
     private static ArrayList<Record> convertLeftRecords(Element element) {
 
+        for (int i = 0; i < element.childNodes().size(); i++) {
+            Node node = element.child(i);
+            if (node.childNodeSize() < 4) {
+                continue;
+            }
+            // TODO: 2016/06/09 Nodeのテキストだけ取得ができない
+            String time = node.childNode(0).toString();
+            if (time.isEmpty()) {
+                continue;
+            }
+            String statusText = element.textNodes().get(1).text();
+            String val = element.textNodes().get(1).toString();
+
+        }
+
         ArrayList<Record> records;
         Observable
                 .from(element.childNodes())
