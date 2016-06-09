@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 指定した安栄の詳細を取得
@@ -39,8 +39,9 @@ public class AnneiDetailApiClient {
                 .map(new Func1<Document, ResultDetail>() {
                     @Override
                     public ResultDetail call(Document document) {
-                        return AnneiDetailParser.pars(document,port);
+                        return AnneiDetailParser.pars(document, port);
                     }
-                });
+                })
+                .subscribeOn(Schedulers.newThread());
     }
 }

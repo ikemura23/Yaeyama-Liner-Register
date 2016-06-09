@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.content.Context;
@@ -9,7 +8,6 @@ import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
-import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
 import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfStatusListApi;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -17,6 +15,8 @@ import com.nifty.cloud.mb.core.NCMBObject;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class YaeyamaLinerRegisterService extends BasePeriodicService {
@@ -39,10 +39,11 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             Log.d("YaeyamaLinerRegisterSer", "execTask");
-            startAnneiListQuery();
-            startYkfListQuery();
-            startDreamListQuery();
-            WeatherController.start();
+//            startAnneiListQuery();
+//            startYkfListQuery();
+//            startDreamListQuery();
+//            WeatherController.start();
+            AnneiDetailCotroller.start();
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }

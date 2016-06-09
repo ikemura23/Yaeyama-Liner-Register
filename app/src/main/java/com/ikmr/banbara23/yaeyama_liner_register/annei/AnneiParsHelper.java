@@ -26,27 +26,26 @@ public class AnneiParsHelper {
     }
 
     /**
-     * ステータス
-     * 
-     * @param port
-     * @return
+     * ステータスクエリー取得
+     * @param port ターゲットの港
+     * @return クエリー
      */
     public static String getStatusQuery(Port port) {
         switch (port) {
             case HATERUMA:
-                return "#situation > div > ul.route > li:nth-child(1) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(1) > a > div > span:nth-child(2)";
             case UEHARA:
-                return "#situation > div > ul.route > li:nth-child(2) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(2) > a > div > span:nth-child(2)";
             case HATOMA:
-                return "#situation > div > ul.route > li:nth-child(3) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(3) > a > div > span:nth-child(2)";
             case OOHARA:
-                return "#situation > div > ul.route > li:nth-child(4) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(4) > a > div > span:nth-child(2)";
             case KOHAMA:
-                return "#situation > div > ul.route > li:nth-child(5) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(5) > a > div > span:nth-child(2)";
             case TAKETOMI:
-                return "#situation > div > ul.route > li:nth-child(6) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(6) > a > div > span:nth-child(2)";
             case KUROSHIMA:
-                return "#situation > div > ul.route > li:nth-child(7) > div.area > span.flag.circle";
+                return "#situation > div > ul.route > li:nth-child(7) > a > div > span:nth-child(2)";
             default:
                 return "";
         }
