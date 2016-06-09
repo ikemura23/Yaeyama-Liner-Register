@@ -22,7 +22,7 @@ public class HTMLClient {
      * @param url url
      * @return Observable<String> html文字
      */
-    public static Observable<String> getHtml(final String url) {
+    protected static Observable<String> getHtml(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<String>() {
                     @Override

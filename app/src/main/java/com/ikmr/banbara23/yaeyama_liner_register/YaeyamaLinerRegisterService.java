@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.content.Context;
@@ -7,10 +6,11 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.html.HtmlController;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
+import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -43,6 +43,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             YkfController.start();
             startDreamListQuery();
             WeatherController.start();
+            HtmlController.start();
         } catch (Exception e) {
             Log.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
