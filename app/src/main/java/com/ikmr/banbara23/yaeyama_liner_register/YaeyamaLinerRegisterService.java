@@ -14,6 +14,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.socks.library.KLog;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,14 +39,14 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         activeService = this;
 
         try {
-            Log.d("YaeyamaLinerRegisterSer", "execTask");
+            KLog.d("execTask");
             startAnneiListQuery();
             YkfController.start();
             startDreamListQuery();
             WeatherController.start();
             HtmlController.start();
         } catch (Exception e) {
-            Log.d("YaeyamaLinerRegisterSer", e.getMessage());
+            KLog.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
         makeNextPlan();
     }
@@ -77,20 +78,20 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     @Override
                     public void onCompleted() {
                         // 完了
-                        Log.d("MainActivity", "AnneiList:onCompleted");
+                        KLog.d("MainActivity", "AnneiList:onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         // 失敗
-                        Log.d("MainActivity", "AnneiList:onError");
-                        Log.d("MainActivity", "AnneiList:e:" + e);
+                        KLog.d("MainActivity", "AnneiList:onError");
+                        KLog.d("MainActivity", "AnneiList:e:" + e);
                     }
 
                     @Override
                     public void onNext(Result result) {
                         // 成功
-                        Log.d("MainActivity", "AnneiList:onNext");
+                        KLog.d("MainActivity", "AnneiList:onNext");
                         saveAnneiListResult(result);
                     }
                 });
@@ -105,7 +106,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         // 前回の値と比較
         if (isEqualForLastTimeResult(result, getString(R.string.pref_annei_result_key))) {
             // 前回の結果と同じ値ならAPI送信しない
-            Log.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
+            KLog.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
             return;
         }
 

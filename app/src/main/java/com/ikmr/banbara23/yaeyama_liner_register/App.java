@@ -4,6 +4,7 @@ package com.ikmr.banbara23.yaeyama_liner_register;
 import android.app.Application;
 
 import com.nifty.cloud.mb.core.NCMB;
+import com.socks.library.KLog;
 
 public class App extends Application {
 
@@ -16,5 +17,6 @@ public class App extends Application {
                 BuildConfig.NCMB_CLIENT_KEY);
 
         Base.initialize(this);
+        KLog.init(BuildConfig.DEBUG);
     }
 }
