@@ -7,6 +7,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -51,7 +52,7 @@ public class YkfParser {
         try {
             text = document.select("#unkou_bg_top > div.unkou_hed > div").text();
         } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
+            KLog.d(ex.getMessage());
             text = "Error";
         }
         return text;
