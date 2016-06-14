@@ -3,7 +3,6 @@ package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamListParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * ドリーム観光の運航一覧を取得するapiクラス
@@ -45,6 +45,7 @@ public class DreamStatusListApi {
                     public Result call(Document document) {
                         return DreamListParser.pars(document);
                     }
-                });
+                })
+                .subscribeOn(Schedulers.newThread());
     }
 }

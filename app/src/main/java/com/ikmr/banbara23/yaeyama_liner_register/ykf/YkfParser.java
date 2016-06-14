@@ -1,6 +1,8 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
+import android.util.Log;
+
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
@@ -8,6 +10,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -16,28 +19,25 @@ import java.util.ArrayList;
  * 八重山観光フェリーのHTMLパースクラス
  */
 public class YkfParser {
+    private static final String TAG = "YkfParser";
 
     public static Result pars(Document doc) {
         if (doc == null) {
             return null;
         }
         Result result = new Result();
+        result.setCompany(Company.YKF);
+
+        // トップコメント
+        result.setTitle(parsTopComment(doc));
+
+        // 2016年06月08日 (水) 13:26現在　という感じになる
+        result.setUpdateTime(parsUpdateTime(doc));
+
         ArrayList<Liner> mLiners = new ArrayList<>();
-
-        // タイトル（通常はないがたまに出てくる）
-        result.setTitle(getTitle(doc.getElementsByTag("body")));
-        // 更新日時 「Ｈ27/9/26 06：30現在」という感じになる
-        result.setUpdateTime(getUpdateTime(doc.getElementsByTag("body")));
-
-        // <div id="liner"> 取得
-        Elements tr = doc.getElementsByTag("tr");
-
-        if (tr == null) {
-            return null;
-        }
         ArrayList<Port> array = getYkfPortArray();
         for (Port port : array) {
-            mLiners.add(getDivPort(port, tr));
+            mLiners.add(parsLiner(port, doc));
         }
         result.setLiners(mLiners);
         return result;
@@ -45,87 +45,84 @@ public class YkfParser {
 
     /**
      * 更新日時の取得
-     *
-     * @param body bodyタグ
-     * @return 更新日時 [Ｈ27/9/26 06：30現在]
      */
-    private static String getUpdateTime(Elements body) {
-        if (body == null) {
-            return "";
+    private static String parsUpdateTime(Document document) {
+        String text;
+        try {
+            text = document.select("#unkou_bg_top > div.unkou_hed > div").text();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+            text = "Error";
         }
-        Element b = body.get(0);
-        if (b == null) {
-            return null;
-        }
-        Elements p = b.getElementsByTag("p");
-        if (p == null || p.size() < 2) {
-            return null;
-        }
-
-        return p.get(1).text();
+        return text;
     }
 
     /**
      * タイトル取得
-     *
-     * @param body タグ
-     * @return タイトル
      */
-    private static String getTitle(Elements body) {
-        if (body == null) {
-            return "";
+    private static String parsTopComment(Document document) {
+        String text;
+        try {
+            text = document.select("#unkou_bg_top > div.unkou_bikou > p").text().replace("運航状況の一覧", "");
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+            text = "Error";
         }
-        Element b = body.get(0);
-        if (b == null) {
-            return null;
-        }
-        Elements p = b.getElementsByTag("p");
-        if (p == null || p.size() < 3) {
-            return null;
-        }
-
-        return p.get(2).text();
+        return text;
     }
 
     /**
-     * 波照間
+     * 運行情報をパースする
      *
-     * @param port 港名
-     * @param tr trタグ
-     * @return
+     * @param port     港
+     * @param document html
+     * @return 指定した港の運行情報
      */
-    private static Liner getDivPort(Port port, Elements tr) {
+    private static Liner parsLiner(Port port, Document document) {
         Liner liner = new Liner();
         liner.setPort(port);
-        for (int i = 1; i < tr.size(); i++) {
-            Element element = tr.get(i);
-            if (element == null || element.children().size() < 1) {
-                continue;
-            }
-            if (element.child(0).text().contains(port.getSimpleName())) {
-                liner.setStatus(getStatus(element.child(1).text()));
-                liner.setText(element.child(2).text().replace("\u00a0", "").trim());
-                return liner;
-            }
-        }
+        liner.setStatus(parsStatus(port, document));
+        liner.setText(parsStatusComment(port, document));
+        Log.d("Ykf liner", liner.toString());
         return liner;
     }
 
-    /**
-     * ステータス判別
-     * 
-     * @param text
-     * @return
+    private static Status parsStatus(Port port, Document document) {
+        String query = getStatusSelectorCssQuery(port);
+        try {
+            String value = document.select(query).text();
+            return getStatus(value);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+            return Status.CAUTION;
+        }
+    }
+
+    private static String parsStatusComment(Port port, Document document) {
+        String query = getStatusCommentSelectorCssQuery(port);
+        try {
+            Elements elements = document.select(query);
+            Element element = elements.get(0);
+            Node node = element.childNode(2);
+            return node.toString();
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+            return "Error";
+        }
+    }
+
+    /***
+     * 文字からステータスを判別する
+     * @param text ステータス文字
+     * @return status
      */
     private static Status getStatus(String text) {
 
         if (text.contains("○") || text.contains("〇")) {
             return Status.NORMAL;
-        }
-        else if (text.contains("×")) {
+        } else if (text.contains("×")) {
             return Status.CANCEL;
-        }
-        else {
+        } else {
             return Status.CAUTION;
         }
     }
@@ -139,5 +136,43 @@ public class YkfParser {
         list.add(Port.UEHARA);
         list.add(Port.HATOMA);
         return list;
+    }
+
+    public static String getStatusSelectorCssQuery(Port port) {
+        switch (port) {
+            case TAKETOMI:
+                return "#u1 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case KOHAMA:
+                return "#u2 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case KUROSHIMA:
+                return "#u3 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case OOHARA:
+                return "#u4 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case UEHARA:
+                return "#u5 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case HATOMA:
+                return "#u6 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            default:
+                return "";
+        }
+    }
+
+    public static String getStatusCommentSelectorCssQuery(Port port) {
+        switch (port) {
+            case TAKETOMI:
+                return "#u1 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case KOHAMA:
+                return "#u2 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case KUROSHIMA:
+                return "#u3 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case OOHARA:
+                return "#u4 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case UEHARA:
+                return "#u5 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case HATOMA:
+                return "#u6 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            default:
+                return "";
+        }
     }
 }
