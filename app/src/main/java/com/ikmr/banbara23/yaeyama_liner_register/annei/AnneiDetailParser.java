@@ -9,6 +9,8 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Record;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.ResultDetail;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,9 +18,6 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-
-import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * 安栄HTMLのパース処理
@@ -96,64 +95,94 @@ public class AnneiDetailParser {
      * @return 石垣発の運航状態一覧
      */
     private static ArrayList<Record> parsLeftRecords() {
-        ArrayList<Record> records = new ArrayList<>();
         try {
             String query = AnneiParsHelper.getRecordQuery(port);
             Element element = document.select(query).first();
-            return convertLeftRecords(element);
-//            for (int i = 2; i < element.childNodeSize(); i++) {
-//                Record record = new Record();
-//                record.setTime(elements.get(i).child(0).text());
-//                record.setStatus(AnneiParsHelper.getStatus(elements.get(i).child(1)));
-//                record.setStatusComment(elements.get(i).child(1).text());
-//                records.add(record);
-//            }
+            return createRecords(element, 0, 1);
         } catch (Exception e) {
             putErrorLog(e);
             return null;
         }
     }
 
+    /**
+     * HTMLからレコードを作成
+     *
+     * @param element
+     * @param leftIndex
+     * @param rightIndex
+     * @return
+     */
+    private static ArrayList<Record> createRecords(Element element, int leftIndex, int rightIndex) {
+        if (element == null) {
+            return null;
+        }
+        ArrayList<Record> records = new ArrayList<>();
+
+        for (Node node : element.childNodes()) {
+            if (node.childNodeSize() < 4) {
+                // 4以下はタイトルなのでスキップ
+                continue;
+            }
+            Record record = new Record();
+
+            String time = node.childNode(leftIndex).childNode(0).toString();
+            String statusWord = node.childNode(rightIndex).childNode(0).toString();
+
+            record.setTime(time);
+            record.setStatus(ParseUtil.selectStatusFromString(node.childNode(1).toString()));   // HTMLからステータス判定
+            record.setStatusWord(statusWord);
+            records.add(record);
+            KLog.i(record.toString());
+        }
+        return records;
+    }
+
     private static ArrayList<Record> convertLeftRecords(Element element) {
 
-        for (int i = 0; i < element.childNodes().size(); i++) {
-            Node node = element.child(i);
+        ArrayList<Record> records = new ArrayList<>();
+
+        for (Node node : element.childNodes()) {
             if (node.childNodeSize() < 4) {
                 continue;
             }
-            // TODO: 2016/06/09 Nodeのテキストだけ取得ができない
-            String time = node.childNode(0).toString();
-            if (time.isEmpty()) {
-                continue;
-            }
-            String statusText = element.textNodes().get(1).text();
-            String val = element.textNodes().get(1).toString();
+            Record record = new Record();
 
+            String time = node.childNode(0).childNode(0).toString();
+            String statusWord = node.childNode(1).childNode(0).toString();
+//            String targetPortTime = node.childNode(2).childNode(0).toString();
+//            String targetPortStatus = node.childNode(3).childNode(0).toString();
+
+            record.setTime(time);
+            record.setStatus(ParseUtil.selectStatusFromString(node.childNode(1).toString()));   // HTMLからステータス判定
+            record.setStatusWord(statusWord);
+            records.add(record);
+            KLog.i(record.toString());
         }
 
-        ArrayList<Record> records;
-        Observable
-                .from(element.childNodes())
-                .filter(new Func1<Node, Boolean>() {
-                    @Override
-                    public Boolean call(Node node) {
-                        if (node.childNodeSize() < 4) {
-                            return false;
-                        }
-                        String val = node.toString().trim();
-                        return val.isEmpty();
-                    }
-                })
-                .map(new Func1<Node, Record>() {
-                    @Override
-                    public Record call(Node node) {
-                        Record record = new Record();
-                        record.setTime("");
-                        record.setStatus(null);
-                        record.setStatusComment("");
-                        return record;
-                    }
-                });
+//        ArrayList<Record> records;
+//        Observable
+//                .from(element.childNodes())
+//                .filter(new Func1<Node, Boolean>() {
+//                    @Override
+//                    public Boolean call(Node node) {
+//                        if (node.childNodeSize() < 4) {
+//                            return false;
+//                        }
+//                        String val = node.toString().trim();
+//                        return val.isEmpty();
+//                    }
+//                })
+//                .map(new Func1<Node, Record>() {
+//                    @Override
+//                    public Record call(Node node) {
+//                        Record record = new Record();
+//                        record.setTime("");
+//                        record.setStatus(null);
+//                        record.setStatusWord("");
+//                        return record;
+//                    }
+//                });
 
 //                .create(new Observable.OnSubscribe<ArrayList<Record>>() {
 //            @Override
@@ -162,7 +191,7 @@ public class AnneiDetailParser {
 //            }
 //        });
 //                .toBlocking();
-        return null;
+        return records;
     }
 
     // 右の列 ---------------------------------------------
@@ -182,7 +211,7 @@ public class AnneiDetailParser {
                 Record record = new Record();
                 record.setTime(elements.get(i).child(2).text());
                 record.setStatus(AnneiParsHelper.getStatus(elements.get(i).child(1)));
-                record.setStatusComment(elements.get(i).child(3).text());
+                record.setStatusWord(elements.get(i).child(3).text());
                 records.add(record);
             }
         } catch (Exception e) {

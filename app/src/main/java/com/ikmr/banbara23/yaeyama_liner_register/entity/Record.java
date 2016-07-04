@@ -9,7 +9,7 @@ public class Record {
     // ステータス
     Status status;
     // ステータス文字
-    String StatusComment;
+    String StatusWord;
 
     public Record() {
     }
@@ -30,12 +30,12 @@ public class Record {
         this.status = status;
     }
 
-    public String getStatusComment() {
-        return StatusComment;
+    public String getStatusWord() {
+        return StatusWord;
     }
 
-    public void setStatusComment(String statusComment) {
-        StatusComment = statusComment;
+    public void setStatusWord(String statusComment) {
+        StatusWord = statusComment;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Record {
         return "Record{" +
                 "time='" + time + '\'' +
                 ", status=" + status +
-                ", StatusComment='" + StatusComment + '\'' +
+                ", StatusWord='" + StatusWord + '\'' +
                 '}';
     }
 }
