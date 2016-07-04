@@ -138,62 +138,6 @@ public class AnneiDetailParser {
         return records;
     }
 
-    private static ArrayList<Record> convertLeftRecords(Element element) {
-
-        ArrayList<Record> records = new ArrayList<>();
-
-        for (Node node : element.childNodes()) {
-            if (node.childNodeSize() < 4) {
-                continue;
-            }
-            Record record = new Record();
-
-            String time = node.childNode(0).childNode(0).toString();
-            String statusWord = node.childNode(1).childNode(0).toString();
-//            String targetPortTime = node.childNode(2).childNode(0).toString();
-//            String targetPortStatus = node.childNode(3).childNode(0).toString();
-
-            record.setTime(time);
-            record.setStatus(ParseUtil.selectStatusFromString(node.childNode(1).toString()));   // HTMLからステータス判定
-            record.setStatusWord(statusWord);
-            records.add(record);
-            KLog.i(record.toString());
-        }
-
-//        ArrayList<Record> records;
-//        Observable
-//                .from(element.childNodes())
-//                .filter(new Func1<Node, Boolean>() {
-//                    @Override
-//                    public Boolean call(Node node) {
-//                        if (node.childNodeSize() < 4) {
-//                            return false;
-//                        }
-//                        String val = node.toString().trim();
-//                        return val.isEmpty();
-//                    }
-//                })
-//                .map(new Func1<Node, Record>() {
-//                    @Override
-//                    public Record call(Node node) {
-//                        Record record = new Record();
-//                        record.setTime("");
-//                        record.setStatus(null);
-//                        record.setStatusWord("");
-//                        return record;
-//                    }
-//                });
-
-//                .create(new Observable.OnSubscribe<ArrayList<Record>>() {
-//            @Override
-//            public void call(Subscriber<? super ArrayList<Record>> subscriber) {
-//
-//            }
-//        });
-//                .toBlocking();
-        return records;
-    }
-
     // 右の列 ---------------------------------------------
     private static LinerRecord parsLinerRecordRight() {
         LinerRecord linerRecord = new LinerRecord();
@@ -203,22 +147,14 @@ public class AnneiDetailParser {
     }
 
     private static ArrayList<Record> parsRightRecords() {
-        ArrayList<Record> records = new ArrayList<>();
         try {
             String query = AnneiParsHelper.getRecordQuery(port);
-            Elements elements = document.select(query);
-            for (int i = 2; i < elements.size(); i++) {
-                Record record = new Record();
-                record.setTime(elements.get(i).child(2).text());
-                record.setStatus(AnneiParsHelper.getStatus(elements.get(i).child(1)));
-                record.setStatusWord(elements.get(i).child(3).text());
-                records.add(record);
-            }
+            Element element = document.select(query).first();
+            return createRecords(element, 2, 3);
         } catch (Exception e) {
             putErrorLog(e);
             return null;
         }
-        return records;
     }
 
     /**
