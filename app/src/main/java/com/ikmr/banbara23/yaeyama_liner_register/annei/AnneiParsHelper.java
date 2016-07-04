@@ -3,6 +3,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Element;
 
@@ -18,6 +19,29 @@ public class AnneiParsHelper {
             // 欠航有り
             return Status.CANCEL;
         } else if (element.hasClass("triangle")) {
+            return Status.CAUTION;
+        } else {
+            // 運航にも欠航にも当てはまらないもの、未定とか
+            return Status.CAUTION;
+        }
+    }
+
+
+    /**
+     * HTMLからステータスを判定する
+     * @param value 部分的なHTMLタグ
+     * @return Status
+     */
+    public static Status selectStatusFromString(String value) {
+        KLog.i(value);
+        // 運航ステータスの判定-------------------------------
+        if (value.contains("circle")) {
+            // 通常運航
+            return Status.NORMAL;
+        } else if (value.contains("out")) {
+            // 欠航有り
+            return Status.CANCEL;
+        } else if (value.contains("triangle")) {
             return Status.CAUTION;
         } else {
             // 運航にも欠航にも当てはまらないもの、未定とか

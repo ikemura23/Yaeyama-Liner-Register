@@ -130,7 +130,7 @@ public class AnneiDetailParser {
             String statusWord = node.childNode(rightIndex).childNode(0).toString();
 
             record.setTime(time);
-            record.setStatus(ParseUtil.selectStatusFromString(node.childNode(1).toString()));   // HTMLからステータス判定
+            record.setStatus(AnneiParsHelper.selectStatusFromString(node.childNode(1).toString()));   // HTMLからステータス判定
             record.setStatusWord(statusWord);
             records.add(record);
             KLog.i(record.toString());
