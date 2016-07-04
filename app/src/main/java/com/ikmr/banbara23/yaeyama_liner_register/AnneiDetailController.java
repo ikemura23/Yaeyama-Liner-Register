@@ -1,8 +1,10 @@
-package com.ikmr.banbara23.yaeyama_liner_register.annei;
+package com.ikmr.banbara23.yaeyama_liner_register;
 
-import com.ikmr.banbara23.yaeyama_liner_register.Base;
-import com.ikmr.banbara23.yaeyama_liner_register.Const;
-import com.ikmr.banbara23.yaeyama_liner_register.R;
+import android.util.Log;
+
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiDetailApiClient;
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiDetailParser;
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiParsHelper;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.ResultDetail;
 
@@ -17,12 +19,10 @@ import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * 指定した安栄の詳細を取得
- */
-public class AnneiDetailApiClient {
-    public  Observable<ResultDetail> request(List<Port> portList) {
-        return Observable
+public class AnneiDetailController {
+    public static void start() {
+        List<Port> portList = AnneiParsHelper.getTargetPortList();
+        Observable
                 .from(portList)
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
@@ -38,12 +38,28 @@ public class AnneiDetailApiClient {
                         }
                     }
                 })
+                .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Document, ResultDetail>() {
                     @Override
                     public ResultDetail call(Document document) {
                         return AnneiDetailParser.pars(document, port);
                     }
                 })
-                .subscribeOn(Schedulers.newThread());
+                .subscribe(new Subscriber<ResultDetail>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i("AnneiDetailController", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i("AnneiDetailController", "onError " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(ResultDetail resultDetail) {
+                        Log.i("AnneiDetailController", "onNext " + resultDetail.toString());
+                    }
+                });
     }
 }

@@ -7,7 +7,21 @@ import com.socks.library.KLog;
 
 import org.jsoup.nodes.Element;
 
+import java.util.ArrayList;
+
 public class AnneiParsHelper {
+
+    public static ArrayList<Port> getTargetPortList() {
+        ArrayList<Port> list = new ArrayList<>();
+        list.add(Port.TAKETOMI);
+        list.add(Port.KOHAMA);
+        list.add(Port.KUROSHIMA);
+        list.add(Port.OOHARA);
+        list.add(Port.UEHARA);
+        list.add(Port.HATOMA);
+        list.add(Port.HATERUMA);
+        return list;
+    }
 
     public static Status getStatus(Element element) {
         // 運航ステータスの判定-------------------------------
@@ -48,7 +62,6 @@ public class AnneiParsHelper {
             return Status.CAUTION;
         }
     }
-
     /**
      * ステータスクエリー取得
      * @param port ターゲットの港
