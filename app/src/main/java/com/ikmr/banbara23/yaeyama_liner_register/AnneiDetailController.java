@@ -2,10 +2,16 @@ package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiDetailParser;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiParsHelper;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetailList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.ResultDetail;
+import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
+import com.nifty.cloud.mb.core.DoneCallback;
+import com.nifty.cloud.mb.core.NCMBException;
+import com.nifty.cloud.mb.core.NCMBObject;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,16 +22,16 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class AnneiDetailController {
+    private static final String DETAIL_TABLE_NAME = "AnneiLinerStatusDetail";
+
     public static void start() {
         Observable
-                .create(new Observable.OnSubscribe< List<ResultDetail>>() {
+                .create(new Observable.OnSubscribe<List<ResultDetail>>() {
                     @Override
-                    public void call(Subscriber<? super  List<ResultDetail>> subscriber) {
+                    public void call(Subscriber<? super List<ResultDetail>> subscriber) {
                         Document document;
                         try {
                             String url = Base.getResources().getString(R.string.url_annei_list);
@@ -45,7 +51,7 @@ public class AnneiDetailController {
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber< List<ResultDetail>>() {
+                .subscribe(new Subscriber<List<ResultDetail>>() {
                     @Override
                     public void onCompleted() {
                         Log.i("AnneiDetailController", "onCompleted");
@@ -57,9 +63,35 @@ public class AnneiDetailController {
                     }
 
                     @Override
-                    public void onNext( List<ResultDetail> resultDetailList) {
-                        Log.i("AnneiDetailController", "onNext " + resultDetailList.toString());
+                    public void onNext(List<ResultDetail> resultDetailList) {
+                        LinerStatusDetailList linerStatusDetailList = new LinerStatusDetailList();
+                        linerStatusDetailList.setResultDetailList(resultDetailList);
+                        Log.i("AnneiDetailController", "onNext " + linerStatusDetailList);
+                        sendNcmbAndSaveLocal(linerStatusDetailList);
                     }
                 });
+    }
+
+    private static void sendNcmbAndSaveLocal(final LinerStatusDetailList linerStatusDetailList) {
+//        if (CashUtil.isEqualForLastTime(linerStatusDetailList, DETAIL_TABLE_NAME)) {
+//            return;
+//        }
+        NCMBObject ncmbObject = new NCMBObject(DETAIL_TABLE_NAME);
+        for (ResultDetail resultDetail : linerStatusDetailList.getResultDetailList()) {
+            // key = 港名, value = 港単体の詳細パース
+            ncmbObject.put(
+                    resultDetail.getPort().getPortEn(),
+                    new Gson().toJson(resultDetail));
+        }
+        ncmbObject.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    return;
+                }
+                CashUtil.saveToPref(linerStatusDetailList, DETAIL_TABLE_NAME);
+            }
+        });
+
     }
 }

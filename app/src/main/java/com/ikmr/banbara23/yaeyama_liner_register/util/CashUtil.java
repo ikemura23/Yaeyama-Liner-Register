@@ -1,5 +1,7 @@
 package com.ikmr.banbara23.yaeyama_liner_register.util;
 
+import com.google.gson.Gson;
+
 public class CashUtil {
     /**
      * 前回のキャッシュと値を比較
@@ -11,5 +13,20 @@ public class CashUtil {
     public static boolean isEqualForLastTime(String json, String key) {
         String lastTimeString = PreferenceUtils.get(key, "");
         return lastTimeString.equals(json);
+    }
+
+    public static boolean isEqualForLastTime(Object object, String key) {
+        String json = new Gson().toJson(object);
+        String lastTimeString = PreferenceUtils.get(key, "");
+        return lastTimeString.equals(json);
+    }
+
+    public static void saveToPref(Object object, String key) {
+        try {
+            String json = new Gson().toJson(object);
+            PreferenceUtils.put(key, json);
+        } catch (Exception ignored) {
+
+        }
     }
 }

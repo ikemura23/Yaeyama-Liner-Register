@@ -13,12 +13,12 @@ public class AnneiParsHelper {
 
     public static ArrayList<Port> getTargetPortList() {
         ArrayList<Port> list = new ArrayList<>();
-        list.add(Port.TAKETOMI);
-        list.add(Port.KOHAMA);
-        list.add(Port.KUROSHIMA);
-        list.add(Port.OOHARA);
-        list.add(Port.UEHARA);
-        list.add(Port.HATOMA);
+//        list.add(Port.TAKETOMI);
+//        list.add(Port.KOHAMA);
+//        list.add(Port.KUROSHIMA);
+//        list.add(Port.OOHARA);
+//        list.add(Port.UEHARA);
+//        list.add(Port.HATOMA);
         list.add(Port.HATERUMA);
         return list;
     }

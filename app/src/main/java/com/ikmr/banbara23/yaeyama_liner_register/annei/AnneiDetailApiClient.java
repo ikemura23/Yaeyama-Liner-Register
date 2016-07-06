@@ -22,28 +22,29 @@ import rx.schedulers.Schedulers;
  */
 public class AnneiDetailApiClient {
     public  Observable<ResultDetail> request(List<Port> portList) {
-        return Observable
-                .from(portList)
-                .create(new Observable.OnSubscribe<Document>() {
-                    @Override
-                    public void call(Subscriber<? super Document> subscriber) {
-                        Document document;
-                        try {
-                            String url = Base.getResources().getString(R.string.url_annei_list);
-                            document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
-                            subscriber.onNext(document);
-                            subscriber.onCompleted();
-                        } catch (IOException e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                .map(new Func1<Document, ResultDetail>() {
-                    @Override
-                    public ResultDetail call(Document document) {
-                        return AnneiDetailParser.pars(document, port);
-                    }
-                })
-                .subscribeOn(Schedulers.newThread());
+        return null;
+//        Observable
+//                .from(portList)
+//                .create(new Observable.OnSubscribe<Document>() {
+//                    @Override
+//                    public void call(Subscriber<? super Document> subscriber) {
+//                        Document document;
+//                        try {
+//                            String url = Base.getResources().getString(R.string.url_annei_list);
+//                            document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
+//                            subscriber.onNext(document);
+//                            subscriber.onCompleted();
+//                        } catch (IOException e) {
+//                            subscriber.onError(e);
+//                        }
+//                    }
+//                })
+//                .map(new Func1<Document, ResultDetail>() {
+//                    @Override
+//                    public ResultDetail call(Document document) {
+//                        return AnneiDetailParser.pars(document, port);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.newThread());
     }
 }
