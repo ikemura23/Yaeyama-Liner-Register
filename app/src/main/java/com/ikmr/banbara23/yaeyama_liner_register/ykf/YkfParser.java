@@ -1,7 +1,5 @@
 package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
-import android.util.Log;
-
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
@@ -37,6 +35,7 @@ public class YkfParser {
 
         ArrayList<Liner> mLiners = new ArrayList<>();
         ArrayList<Port> array = getYkfPortArray();
+        // 一覧のパース
         for (Port port : array) {
             mLiners.add(parsLiner(port, doc));
         }
@@ -66,8 +65,8 @@ public class YkfParser {
         try {
             text = document.select("#unkou_bg_top > div.unkou_bikou > p").text().replace("運航状況の一覧", "");
         } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
-            text = "Error";
+            KLog.e(TAG, ex.getMessage());
+            text = "";
         }
         return text;
     }
@@ -83,37 +82,76 @@ public class YkfParser {
         Liner liner = new Liner();
         liner.setPort(port);
         liner.setStatus(parsStatus(port, document));
-        liner.setText(parsStatusComment(port, document));
-        Log.d("Ykf liner", liner.toString());
+        String statusText = parsStatusText(port, document);
+        String statusComment = parsStatusComment(port, document);
+        liner.setText(statusText + " " + statusComment);
+        KLog.d("Ykf liner", liner.toString());
         return liner;
     }
 
+    /***
+     * 運行一覧 > ステータスEnumの
+     *
+     * @param port
+     * @param document
+     * @return
+     */
     private static Status parsStatus(Port port, Document document) {
         String query = getStatusSelectorCssQuery(port);
         try {
             String value = document.select(query).text();
             return getStatus(value);
         } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
+            KLog.e(TAG, ex.getMessage());
             return Status.CAUTION;
         }
     }
 
-    private static String parsStatusComment(Port port, Document document) {
-        String query = getStatusCommentSelectorCssQuery(port);
+    /**
+     * 一覧 > ステータス テキスト
+     *
+     * @param port
+     * @param document
+     * @return
+     */
+    private static String parsStatusText(Port port, Document document) {
+        String query = getStatusTextSelectorQuery(port);
         try {
             Elements elements = document.select(query);
-            Element element = elements.get(0);
+            Element element = elements.first();
             Node node = element.childNode(2);
-            return node.toString();
+            if (node.childNodeSize() == 0) {
+                return node.toString();
+            }
+            return node.childNode(0).toString();
         } catch (Exception ex) {
-            Log.e(TAG, ex.getMessage());
-            return "Error";
+            KLog.e(TAG, ex.getMessage());
         }
+        return "";
+    }
+
+    /**
+     * 一覧 > ステータス コメント
+     *
+     * @param port
+     * @param document
+     * @return
+     */
+    private static String parsStatusComment(Port port, Document document) {
+        String query = getStatusCommentSelectorQuery(port);
+        try {
+            Elements elements = document.select(query);
+            Element element = elements.first();
+            return element.text();
+        } catch (Exception ex) {
+            KLog.e(TAG, ex.getMessage());
+        }
+        return "";
     }
 
     /***
      * 文字からステータスを判別する
+     *
      * @param text ステータス文字
      * @return status
      */
@@ -128,6 +166,11 @@ public class YkfParser {
         }
     }
 
+    /**
+     * 一覧の表示順
+     *
+     * @return
+     */
     private static ArrayList<Port> getYkfPortArray() {
         ArrayList<Port> list = new ArrayList<>();
         list.add(Port.TAKETOMI);
@@ -139,6 +182,12 @@ public class YkfParser {
         return list;
     }
 
+    /**
+     * クエリーパス ステータス
+     *
+     * @param port
+     * @return
+     */
     public static String getStatusSelectorCssQuery(Port port) {
         switch (port) {
             case TAKETOMI:
@@ -158,7 +207,13 @@ public class YkfParser {
         }
     }
 
-    public static String getStatusCommentSelectorCssQuery(Port port) {
+    /**
+     * クエリーパス ステータス テキスト
+     *
+     * @param port
+     * @return
+     */
+    public static String getStatusTextSelectorQuery(Port port) {
         switch (port) {
             case TAKETOMI:
                 return "#u1 > div.unkou_item_display_in > div.unkou_item_display_txt";
@@ -172,6 +227,31 @@ public class YkfParser {
                 return "#u5 > div.unkou_item_display_in > div.unkou_item_display_txt";
             case HATOMA:
                 return "#u6 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * クエリーパス ステータスコメント
+     *
+     * @param port
+     * @return
+     */
+    public static String getStatusCommentSelectorQuery(Port port) {
+        switch (port) {
+            case TAKETOMI:
+                return "#u1 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case KOHAMA:
+                return "#u2 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case KUROSHIMA:
+                return "#u3 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case OOHARA:
+                return "#u4 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case UEHARA:
+                return "#u5 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case HATOMA:
+                return "#u6 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
             default:
                 return "";
         }

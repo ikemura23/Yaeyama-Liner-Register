@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
@@ -67,9 +66,9 @@ public class DreamListParser {
 
     /**
      * 港を元に運航状況を作る
-     * 
+     *
      * @param targetPort 欲しい港
-     * @param ul HPの港一覧
+     * @param ul         HPの港一覧
      * @return
      */
     private static Liner getDivPort(Port targetPort, Element ul) {
@@ -87,30 +86,17 @@ public class DreamListParser {
                 continue;
             }
 
-            // リニューアル後のドリーム観光HPは以下のようになっている 2016/05/21時点
-            // <li>
-            // <div>竹富島
-            // <span class="">通常運航</span>
-            // </div>
-            // <div class="service_remark service_normal">
-            // </div>
-            // </li>
-
-            // 運航状況の箇所は以下になっている
-            // <span class="">通常運航</span>
-            // <span class="sub">臨時便にて運航</span>
-            // <span class="sus">運休</span>
-
             Elements span = li.getElementsByTag("span");
+            Element div = li.child(1);
             if (isEmptyElements(span)) {
                 continue;
             }
 
             // ステータスを取得
-            liner.setStatus(parsStatus(span));
+            liner.setStatus(parsStatus(li));
 
             // コメントを取得
-            liner.setText(parsComment(span, li));
+            liner.setText(parsComment(div));
 
             // Linerに値がちゃんと入っていればforから抜ける
             if (liner.getPort() != null && liner.getText() != null) {
@@ -121,43 +107,48 @@ public class DreamListParser {
         return liner;
     }
 
-    private static Status parsStatus(Elements span) {
+    /**
+     * ステータス判定
+     *
+     * @param li liタグ
+     * @return Status
+     */
+    private static Status parsStatus(Element li) {
+        Element firstDiv = li.child(0);     //クラス名で取得できるパターンもあるので一応みる
+        Element secondDiv = li.child(1);    //クラスが空ならはこのdivで判断
         try {
+            // 通常運行、運休、結構などが入ってる
+            String statusText = secondDiv.text();
 
-            // テキストを取得 うまく取れてれば、通常運行 となる
-            String statusText = span.get(0).text();
-
-            // クラス名でステータス判定
+            // クラス名でステータス判定 --------------
             // 運休
-            if (span.hasClass("sus")) {
+            if (firstDiv.hasClass("sus")) {
                 return Status.SUSPEND;
             }
             // 臨時便にて運航
-            if (span.hasClass("sub")) {
+            if (firstDiv.hasClass("sub")) {
                 return Status.NORMAL;
             }
 
-            // コメントでステータス判定
+            // コメントでステータス判定 --------------
             // ステータス決め
-            if (statusText.equals("通常運航")) {
+            if (statusText.startsWith("通常運航")) {
                 return Status.NORMAL;
-            }
-            else if (statusText.equals("臨時便にて運航")) {
+            } else if (statusText.equals("臨時便にて運航")) {
                 return Status.NORMAL;
-            }
-            else if (statusText.equals("欠航")) {
+            } else if (statusText.equals("欠航")) {
                 return Status.CANCEL;
-            }
-            else if (statusText.equals("全便欠航")) {
+            } else if (statusText.equals("全便欠航")) {
                 return Status.CANCEL;
-            }
-            else if (statusText.equals("運休日")) {
+            } else if (statusText.equals("終日欠航")) {
+                return Status.CANCEL;
+            } else if (statusText.equals("終日運休")) {
+                return Status.CANCEL;
+            } else if (statusText.equals("運休日")) {
                 return Status.SUSPEND;
-            }
-            else if (statusText.equals("運休")) {
+            } else if (statusText.equals("運休")) {
                 return Status.SUSPEND;
-            }
-            else {
+            } else {
                 return Status.CAUTION;
             }
         } catch (Exception ex) {
@@ -168,25 +159,20 @@ public class DreamListParser {
     /**
      * コメントを取得
      *
-     * @param span
-     * @param li リストタグ
+     * @param div
+     * @param div リタグ
      * @return
      */
-    private static String parsComment(Elements span, Element li) {
-        if (li == null) {
+    private static String parsComment(Element div) {
+        if (div == null) {
             return "";
         }
-        if (li.children().size() < 2) {
-            return "";
-        }
-        return span.get(0).text()
-                + " "
-                + li.children().get(1).text();
+        return div.text();
     }
 
     /**
      * 文字からPortを返す
-     * 
+     *
      * @param element タグ
      * @return 港
      */
@@ -199,7 +185,7 @@ public class DreamListParser {
 
     /**
      * Elementsの空チェック
-     * 
+     *
      * @param elements パースされたタグ値
      * @return true:空 false:値あり
      */
@@ -214,7 +200,7 @@ public class DreamListParser {
     /**
      * 更新時刻を取得<br>
      * 2016年5月22日 7時00分（日）更新 という値で取れる
-     * 
+     *
      * @return 更新時刻
      */
     private static String getUpdateTime(Element ul) {
@@ -230,6 +216,11 @@ public class DreamListParser {
         return updateTime;
     }
 
+    /**
+     * パース順を指定
+     *
+     * @return 港リスト
+     */
     private static ArrayList<Port> getPortArray() {
         ArrayList<Port> list = new ArrayList<>();
         list.add(Port.TAKETOMI);
