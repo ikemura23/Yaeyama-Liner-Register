@@ -104,9 +104,12 @@ public class YkfParser {
         String query = getStatusCommentSelectorCssQuery(port);
         try {
             Elements elements = document.select(query);
-            Element element = elements.get(0);
+            Element element = elements.first();
             Node node = element.childNode(2);
-            return node.toString();
+            if (node.childNodeSize() == 0) {
+                return node.toString();
+            }
+            return node.childNode(0).toString();
         } catch (Exception ex) {
             Log.e(TAG, ex.getMessage());
             return "Error";
