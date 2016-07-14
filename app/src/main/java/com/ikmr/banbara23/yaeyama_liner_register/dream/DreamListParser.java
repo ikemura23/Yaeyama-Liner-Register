@@ -86,17 +86,20 @@ public class DreamListParser {
                 continue;
             }
 
-            Elements span = li.getElementsByTag("span");
-            Element div = li.child(1);
-            if (isEmptyElements(span)) {
+            Element firstDiv = li.child(0);
+            if (isEmptyElement(firstDiv)) {
                 continue;
             }
 
-            // ステータスを取得
-            liner.setStatus(parsStatus(li));
-
-            // コメントを取得
-            liner.setText(parsComment(div));
+            String comment;
+            if (firstDiv.children().size() > 1) {
+                liner.setStatus(parsStatus(firstDiv.child(1))); // ステータスを取得
+                comment = firstDiv.child(1).text();             // コメントを取得
+            } else {
+                liner.setStatus(parsStatus(li.child(1)));       // ステータスを取得
+                comment = li.child(1).text();                   // コメントを取得
+            }
+            liner.setText(comment);
 
             // Linerに値がちゃんと入っていればforから抜ける
             if (liner.getPort() != null && liner.getText() != null) {
@@ -110,23 +113,22 @@ public class DreamListParser {
     /**
      * ステータス判定
      *
-     * @param li liタグ
+     * @param div liタグ
      * @return Status
      */
-    private static Status parsStatus(Element li) {
-        Element firstDiv = li.child(0);     //クラス名で取得できるパターンもあるので一応みる
-        Element secondDiv = li.child(1);    //クラスが空ならはこのdivで判断
+    private static Status parsStatus(Element div) {
         try {
             // 通常運行、運休、結構などが入ってる
-            String statusText = secondDiv.text();
+
+            String statusText = div.text();
 
             // クラス名でステータス判定 --------------
             // 運休
-            if (firstDiv.hasClass("sus")) {
+            if (div.hasClass("sus")) {
                 return Status.SUSPEND;
             }
             // 臨時便にて運航
-            if (firstDiv.hasClass("sub")) {
+            if (div.hasClass("sub")) {
                 return Status.NORMAL;
             }
 
@@ -159,15 +161,19 @@ public class DreamListParser {
     /**
      * コメントを取得
      *
-     * @param div
-     * @param div リタグ
+     * @param li
+     * @param li リタグ
      * @return
      */
-    private static String parsComment(Element div) {
-        if (div == null) {
+    private static String parsComment(Element li) {
+        if (li == null) {
             return "";
         }
-        return div.text();
+        if (li.children().size() > 1) {
+            return li.child(0).text() + " " + li.child(1).text();
+        } else {
+            return li.child(0).text();
+        }
     }
 
     /**
