@@ -1,16 +1,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
 /**
- * 運行記録情報クラス
+ * レコード 左が石垣島 右が対象の港
  */
 public class LinerRecordInfo {
-    // 左側の運行（石垣）
     LinerRecord linerRecordLeft;
-    // 右側の運行（その他以外）
     LinerRecord linerRecordRight;
-
-    public LinerRecordInfo() {
-    }
 
     public LinerRecord getLinerRecordLeft() {
         return linerRecordLeft;

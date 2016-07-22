@@ -1,18 +1,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
 /**
- * 運行記録の単体
+ * レコード単体
  */
 public class Record {
-    // 出発時刻
     String time;
-    // ステータス
-    Status status;
-    // ステータス文字
-    String StatusComment;
-
-    public Record() {
-    }
+    StatusInfo statusInfo;
 
     public String getTime() {
         return time;
@@ -22,28 +15,19 @@ public class Record {
         this.time = time;
     }
 
-    public Status getStatus() {
-        return status;
+    public StatusInfo getStatusInfo() {
+        return statusInfo;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getStatusComment() {
-        return StatusComment;
-    }
-
-    public void setStatusComment(String statusComment) {
-        StatusComment = statusComment;
+    public void setStatusInfo(StatusInfo statusInfo) {
+        this.statusInfo = statusInfo;
     }
 
     @Override
     public String toString() {
         return "Record{" +
                 "time='" + time + '\'' +
-                ", status=" + status +
-                ", StatusComment='" + StatusComment + '\'' +
+                ", statusInfo=" + statusInfo +
                 '}';
     }
 }

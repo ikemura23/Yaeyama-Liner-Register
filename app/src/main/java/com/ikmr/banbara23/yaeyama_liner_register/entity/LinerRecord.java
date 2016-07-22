@@ -9,10 +9,7 @@ public class LinerRecord {
     // 港
     Port port;
     // 運行記録の一覧
-    ArrayList<Record> records;
-
-    public LinerRecord() {
-    }
+    ArrayList<Record> recordList;
 
     public Port getPort() {
         return port;
@@ -22,19 +19,19 @@ public class LinerRecord {
         this.port = port;
     }
 
-    public ArrayList<Record> getRecords() {
-        return records;
+    public ArrayList<Record> getRecordList() {
+        return recordList;
     }
 
-    public void setRecords(ArrayList<Record> records) {
-        this.records = records;
+    public void setRecordList(ArrayList<Record> recordList) {
+        this.recordList = recordList;
     }
 
     @Override
     public String toString() {
         return "LinerRecord{" +
                 "port=" + port +
-                ", records=" + records +
+                ", recordList=" + recordList +
                 '}';
     }
 }
