@@ -1,5 +1,8 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
+/**
+ * ステータス詳細
+ */
 public class LinerStatusDetail extends LinerStatus {
     LinerStatus linerStatus;
     LinerRecordInfo linerRecordInfo;

@@ -1,17 +1,20 @@
 
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
+/**
+ * ライナー情報
+ */
 public class LinerInfo {
-    Company companry;
+    Company company;
     String updateDateTime;
     String comment;
 
-    public Company getCompanry() {
-        return companry;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCompanry(Company companry) {
-        this.companry = companry;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getUpdateDateTime() {
@@ -33,7 +36,7 @@ public class LinerInfo {
     @Override
     public String toString() {
         return "LinerInfo{" +
-                "companry=" + companry +
+                "company=" + company +
                 ", updateDateTime='" + updateDateTime + '\'' +
                 ", comment='" + comment + '\'' +
                 '}';

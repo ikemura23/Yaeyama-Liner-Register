@@ -1,5 +1,8 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
+/**
+ * レコード単体
+ */
 public class Record {
     String time;
     StatusInfo statusInfo;

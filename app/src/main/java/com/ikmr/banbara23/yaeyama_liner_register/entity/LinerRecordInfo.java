@@ -1,5 +1,8 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
+/**
+ * レコード 左が石垣島 右が対象の港
+ */
 public class LinerRecordInfo {
     LinerRecord linerRecordLef;
     LinerRecord linerRecordRight;

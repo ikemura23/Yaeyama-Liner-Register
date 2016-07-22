@@ -2,6 +2,9 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
 import java.util.ArrayList;
 
+/**
+ * 港詳細の時間別ステータス
+ */
 public class LinerRecord {
     Port port;
     ArrayList<Record> recordList;
