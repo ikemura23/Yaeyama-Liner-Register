@@ -2,8 +2,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.util;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 /**

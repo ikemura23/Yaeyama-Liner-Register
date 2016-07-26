@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -20,28 +21,30 @@ import rx.schedulers.Schedulers;
  * 指定した安栄の詳細を取得
  */
 public class AnneiDetailApiClient {
-    public static Observable<ResultDetail> get(final Port port) {
-        return Observable
-                .create(new Observable.OnSubscribe<Document>() {
-                    @Override
-                    public void call(Subscriber<? super Document> subscriber) {
-                        Document document;
-                        try {
-                            String url = Base.getResources().getString(R.string.url_annei_list);
-                            document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
-                            subscriber.onNext(document);
-                            subscriber.onCompleted();
-                        } catch (IOException e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                .map(new Func1<Document, ResultDetail>() {
-                    @Override
-                    public ResultDetail call(Document document) {
-                        return AnneiDetailParser.pars(document, port);
-                    }
-                })
-                .subscribeOn(Schedulers.newThread());
+    public  Observable<ResultDetail> request(List<Port> portList) {
+        return null;
+//        Observable
+//                .from(portList)
+//                .create(new Observable.OnSubscribe<Document>() {
+//                    @Override
+//                    public void call(Subscriber<? super Document> subscriber) {
+//                        Document document;
+//                        try {
+//                            String url = Base.getResources().getString(R.string.url_annei_list);
+//                            document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
+//                            subscriber.onNext(document);
+//                            subscriber.onCompleted();
+//                        } catch (IOException e) {
+//                            subscriber.onError(e);
+//                        }
+//                    }
+//                })
+//                .map(new Func1<Document, ResultDetail>() {
+//                    @Override
+//                    public ResultDetail call(Document document) {
+//                        return AnneiDetailParser.pars(document, port);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.newThread());
     }
 }

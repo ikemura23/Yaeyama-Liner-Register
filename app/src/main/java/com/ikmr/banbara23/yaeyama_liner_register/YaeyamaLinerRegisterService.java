@@ -7,10 +7,7 @@ import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.html.HtmlController;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
-import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -40,12 +37,12 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             KLog.d("execTask");
-            startAnneiListQuery();
-            YkfController.start();
-            startDreamListQuery();
-            WeatherController.start();
-            HtmlController.start();
-            AnneiDetailCotroller.start();
+//            startAnneiListQuery();
+//            YkfController.start();
+//            startDreamListQuery();
+//            WeatherController.start();
+//            HtmlController.start();
+            AnneiDetailController.start();
         } catch (Exception e) {
             KLog.d("YaeyamaLinerRegisterSer", e.getMessage());
         }

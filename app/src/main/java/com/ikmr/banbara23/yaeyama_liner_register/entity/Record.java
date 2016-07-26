@@ -7,6 +7,9 @@ public class Record {
     String time;
     StatusInfo statusInfo;
 
+    public Record() {
+    }
+
     public String getTime() {
         return time;
     }
