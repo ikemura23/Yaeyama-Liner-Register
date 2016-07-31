@@ -2,7 +2,7 @@
 package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,11 +20,11 @@ public class AnneiStatusListApi {
 
     /**
      * RxAndroidを利用
-     * 
-     * @return Observable<Result>
+     *
      * @param url
+     * @return Observable<Result>
      */
-    public static Observable<Result> request(final String url) {
+    public static Observable<LinerStatusList> request(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
@@ -39,9 +39,9 @@ public class AnneiStatusListApi {
                         }
                     }
                 })
-                .map(new Func1<Document, Result>() {
+                .map(new Func1<Document, LinerStatusList>() {
                     @Override
-                    public Result call(Document document) {
+                    public LinerStatusList call(Document document) {
                         return AnneiListParser.pars(document);
                     }
                 });

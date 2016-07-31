@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.html.HtmlController;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
@@ -74,7 +75,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         AnneiStatusListApi.request(getString(R.string.url_annei_list))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Result>() {
+                .subscribe(new Subscriber<LinerStatusList>() {
                     @Override
                     public void onCompleted() {
                         // 完了
@@ -89,10 +90,10 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     }
 
                     @Override
-                    public void onNext(Result result) {
+                    public void onNext(LinerStatusList linerStatusList) {
                         // 成功
                         KLog.d("MainActivity", "AnneiList:onNext");
-                        saveAnneiListResult(result);
+                        saveAnneiListResult(linerStatusList);
                     }
                 });
     }
@@ -100,18 +101,22 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
     /**
      * 安栄一覧をNCMBに保存APIをリクエスト
      *
-     * @param result 安栄一覧
+     * @param linerStatusList 安栄一覧
      */
-    private void saveAnneiListResult(final Result result) {
-        // 前回の値と比較
-        if (isEqualForLastTimeResult(result, getString(R.string.pref_annei_result_key))) {
-            // 前回の結果と同じ値ならAPI送信しない
-            KLog.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
+    private void saveAnneiListResult(final LinerStatusList linerStatusList) {
+        if (linerStatusList == null) {
             return;
         }
+        // 前回の値と比較
+//        if (isEqualForLastTimeResult(linerStatusList, getString(R.string.pref_annei_result_key))) {
+//            // 前回の結果と同じ値ならAPI送信しない
+//            KLog.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
+//            return;
+//        }
 
         NCMBObject obj = new NCMBObject(getString(R.string.NCMB_annei_table));
-        obj.put("result_json", convertResultToString(result));
+        String json = new Gson().toJson(linerStatusList);
+        obj.put("result_json", json);
 
         obj.saveInBackground(new DoneCallback() {
             @Override
@@ -119,8 +124,8 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                 if (e == null) {
                     // 保存成功
                     Log.d("MainActivity", "AnneiList 保存成功");
-                    Log.d("MainActivity", "result:" + result.toString());
-                    saveResultToPref(result, getString(R.string.pref_annei_result_key));
+                    Log.d("MainActivity", "result:" + linerStatusList.toString());
+//                    saveResultToPref(linerStatusList, getString(R.string.pref_annei_result_key));
                 } else {
                     // 保存失敗
                     Log.d("MainActivity", "AnneiList 保存失敗 :" + e);

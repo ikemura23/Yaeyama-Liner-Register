@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
@@ -21,12 +22,17 @@ import java.util.ArrayList;
  */
 public class AnneiListParser {
 
-    public static Result pars(Document doc) {
+    public static LinerStatusList pars(Document doc) {
         if (doc == null) {
             return null;
         }
+
+        LinerStatusList linerStatusList = new LinerStatusList();
         Result result = new Result();
         ArrayList<Liner> mLiners = new ArrayList<>();
+
+        // 港 --------------------
+
 
         // 更新日-------------------------------
         Elements h3s = doc.getElementsByTag("h3");
@@ -56,7 +62,7 @@ public class AnneiListParser {
         for (Port port : array)
             mLiners.add(getPort(port, li));
         result.setLiners(mLiners);
-        return result;
+        return linerStatusList;
     }
 
     /**
@@ -86,9 +92,9 @@ public class AnneiListParser {
 
     /**
      * 波照間
-     * 
+     *
      * @param port 港名
-     * @param li <div class="box">
+     * @param li   <div class="box">
      * @return
      */
     private static Liner getPort(Port port, Elements li) {
