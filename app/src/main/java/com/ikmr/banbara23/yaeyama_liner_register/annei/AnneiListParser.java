@@ -6,10 +6,12 @@ import android.util.Log;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.StatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
 
 import org.jsoup.nodes.Document;
@@ -17,6 +19,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 安栄HTMLのパース処理
@@ -39,7 +42,8 @@ public class AnneiListParser {
         Elements h3s = doc.getElementsByTag("h3");
         if (ParseUtil.isEmptyElements(h3s))
             return null;
-        result.setUpdateTime(getUpdateTime(h3s.first()));
+//        result.setUpdateTime(getUpdateTime(h3s.first()));
+        linerStatusList.setUpdateDateTime(getUpdateTime(h3s.first()));
 
         // content_wrapクラスを取得
         Elements content_wraps = doc.getElementsByClass("content_wrap");
@@ -53,16 +57,19 @@ public class AnneiListParser {
 
         // タイトル-------------------------------
         Element p = content_wrap_children.first();
-        result.setTitle(getTitle(p));
+//        result.setTitle(getTitle(p));
+        linerStatusList.setComment(getTitle(p));
 
         Element ul = content_wrap_children.get(1);
         Elements li = ul.getElementsByTag("li");
 
+        List<LinerStatus> statusList = new ArrayList<>();
         // // 港別の運航状況
         ArrayList<Port> array = getAnneiPortArray();
         for (Port port : array)
-            mLiners.add(getPort(port, li));
-        result.setLiners(mLiners);
+            statusList.add(getPort(port, li));
+//        result.setLiners(mLiners);
+        linerStatusList.setLinerStatusList(statusList);
         return linerStatusList;
     }
 
@@ -98,9 +105,9 @@ public class AnneiListParser {
      * @param li   <div class="box">
      * @return
      */
-    private static Liner getPort(Port port, Elements li) {
-        Liner liner = new Liner();
-        liner.setPort(port);
+    private static LinerStatus getPort(Port port, Elements li) {
+        LinerStatus linerStatus = new LinerStatus();
+        linerStatus.setPort(port);
 
         if (li == null) {
             return null;
@@ -121,34 +128,40 @@ public class AnneiListParser {
             }
             // spanタグのテキストが港と一致しているか？
             if (spanPort.text().contains(port.getPortSimple())) {
-
+                Elements note = liChild.get(2).getElementsByClass("note");
+                StatusInfo statusInfo = new StatusInfo();
                 // 運航ステータスの判定-------------------------------
                 if (spanStatus.hasClass("circle")) {
                     // 通常運航
-                    liner.setStatus(Status.NORMAL);
+                    statusInfo.setStatus(Status.NORMAL);
                 } else if (spanStatus.hasClass("out")) {
-                    // TODO: 16/04/17 欠航のクラスを調べるて、クラス名をifに入れる
                     // 欠航有り
-                    liner.setStatus(Status.CANCEL);
+                    statusInfo.setStatus(Status.CANCEL);
                 } else if (spanStatus.hasClass("triangle")) {
-                    liner.setStatus(Status.CAUTION);
+                    statusInfo.setStatus(Status.CAUTION);
                 } else {
                     // 運航にも欠航にも当てはまらないもの、未定とか
-                    liner.setStatus(Status.CAUTION);
+                    statusInfo.setStatus(Status.CAUTION);
                 }
 
                 // コメントを取得-------------------------------
                 if (TextUtils.isEmpty(spanStatus.text())) {
                     // 取得できなかったら以下の文字が一覧に表示される
-                    liner.setText("エラー 取得失敗");
+                    statusInfo.setStatusText("エラー");
                 } else {
-                    liner.setText(spanStatus.text());
+                    statusInfo.setStatusText(spanStatus.text());
                 }
-                return liner;
+                linerStatus.setStatusInfo(statusInfo);
+                
+                // コメント
+                if (note != null) {
+                    linerStatus.setComment(note.text());
+                }
+                return linerStatus;
             }
         }
 
-        return liner;
+        return linerStatus;
     }
 
     private static ArrayList<Port> getAnneiPortArray() {
