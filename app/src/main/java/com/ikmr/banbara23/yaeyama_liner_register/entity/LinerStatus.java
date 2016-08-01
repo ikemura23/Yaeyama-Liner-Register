@@ -4,7 +4,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity;
 /**
  * 一覧の単体
  */
-public class LinerStatus extends LinerInfo {
+public class LinerStatus {
     Port port;
     String comment;
     StatusInfo statusInfo;
@@ -17,12 +17,10 @@ public class LinerStatus extends LinerInfo {
         this.port = port;
     }
 
-    @Override
     public String getComment() {
         return comment;
     }
 
-    @Override
     public void setComment(String comment) {
         this.comment = comment;
     }

@@ -4,6 +4,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.annei;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
@@ -31,8 +32,8 @@ public class AnneiListParser {
         Result result = new Result();
         ArrayList<Liner> mLiners = new ArrayList<>();
 
-        // 港 --------------------
-
+        // 会社 --------------------
+        linerStatusList.setCompany(Company.ANNEI);
 
         // 更新日-------------------------------
         Elements h3s = doc.getElementsByTag("h3");

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * ステータス一覧
  */
-public class LinerStatusList {
+public class LinerStatusList extends LinerInfo {
     List<LinerStatus> linerStatusList;
 
     public List<LinerStatus> getLinerStatusList() {
