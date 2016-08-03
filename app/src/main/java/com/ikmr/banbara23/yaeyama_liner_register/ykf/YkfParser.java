@@ -2,6 +2,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
@@ -20,10 +21,11 @@ import java.util.ArrayList;
 public class YkfParser {
     private static final String TAG = "YkfParser";
 
-    public static Result pars(Document doc) {
+    public static LinerStatusList pars(Document doc) {
         if (doc == null) {
             return null;
         }
+        LinerStatusList linerStatusList = new LinerStatusList();
         Result result = new Result();
         result.setCompany(Company.YKF);
 
@@ -40,7 +42,7 @@ public class YkfParser {
             mLiners.add(parsLiner(port, doc));
         }
         result.setLiners(mLiners);
-        return result;
+        return linerStatusList;
     }
 
     /**

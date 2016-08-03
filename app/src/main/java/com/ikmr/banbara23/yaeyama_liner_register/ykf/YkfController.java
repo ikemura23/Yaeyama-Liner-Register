@@ -2,7 +2,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
 import android.util.Log;
 
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -15,7 +15,7 @@ public class YkfController {
 
         YkfListApiClient.request()
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Result>() {
+                .subscribe(new Subscriber<LinerStatusList>() {
                     @Override
                     public void onCompleted() {
                         // 完了
@@ -30,10 +30,10 @@ public class YkfController {
                     }
 
                     @Override
-                    public void onNext(Result result) {
+                    public void onNext(LinerStatusList linerStatusList) {
                         Log.d("YkfController", "YkfList:onNext");
                         // 取得成功
-                        YkfListApiClient.post(result);
+//                        YkfListApiClient.post(result);
                     }
                 });
     }

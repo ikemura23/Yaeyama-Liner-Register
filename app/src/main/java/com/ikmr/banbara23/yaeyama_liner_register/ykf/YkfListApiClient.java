@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.DoneCallback;
@@ -32,7 +33,7 @@ public class YkfListApiClient {
      *
      * @return Observable<Result>
      */
-    public static Observable<Result> request() {
+    public static Observable<LinerStatusList> request() {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
@@ -49,9 +50,9 @@ public class YkfListApiClient {
                         }
                     }
                 })
-                .map(new Func1<Document, Result>() {
+                .map(new Func1<Document, LinerStatusList>() {
                     @Override
-                    public Result call(Document document) {
+                    public LinerStatusList call(Document document) {
                         return YkfParser.pars(document);
                     }
                 })
