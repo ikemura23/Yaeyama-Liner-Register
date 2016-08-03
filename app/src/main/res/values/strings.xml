@@ -250,4 +250,7 @@
     <string name="pref_dream_result_key">pref_dream_result</string>
     <string name="pref_weather_key">pref_weather_key</string>
 
+    <string name="NCMB_column_liner_id">liner_id</string>
+    <string name="NCMB_column_entity_json">entity_json</string>
+
 </resources>

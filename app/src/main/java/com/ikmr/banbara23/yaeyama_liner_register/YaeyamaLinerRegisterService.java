@@ -113,7 +113,9 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         NCMBObject obj = new NCMBObject(getString(R.string.NCMB_annei_table));
         String json = new Gson().toJson(linerStatusList);
-        obj.put("result_json", json);
+
+        obj.put(getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
+        obj.put(getString(R.string.NCMB_column_entity_json), json);
 
         obj.saveInBackground(new DoneCallback() {
             @Override
