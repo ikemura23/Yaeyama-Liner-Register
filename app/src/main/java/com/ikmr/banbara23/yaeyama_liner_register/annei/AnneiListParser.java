@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class AnneiListParser {
 
-    public static LinerStatusList pars(Document doc) {
+    public LinerStatusList pars(Document doc) {
         if (doc == null) {
             return null;
         }

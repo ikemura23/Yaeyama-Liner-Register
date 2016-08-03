@@ -42,7 +42,7 @@ public class AnneiStatusListApi {
                 .map(new Func1<Document, LinerStatusList>() {
                     @Override
                     public LinerStatusList call(Document document) {
-                        return AnneiListParser.pars(document);
+                        return new AnneiListParser().pars(document);
                     }
                 });
     }
