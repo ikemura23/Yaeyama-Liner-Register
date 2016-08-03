@@ -2,14 +2,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.StatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
@@ -32,8 +29,6 @@ public class AnneiListParser {
         }
 
         LinerStatusList linerStatusList = new LinerStatusList();
-        Result result = new Result();
-        ArrayList<Liner> mLiners = new ArrayList<>();
 
         // 会社 --------------------
         linerStatusList.setCompany(Company.ANNEI);
@@ -42,7 +37,6 @@ public class AnneiListParser {
         Elements h3s = doc.getElementsByTag("h3");
         if (ParseUtil.isEmptyElements(h3s))
             return null;
-//        result.setUpdateTime(getUpdateTime(h3s.first()));
         linerStatusList.setUpdateDateTime(getUpdateTime(h3s.first()));
 
         // content_wrapクラスを取得
@@ -57,7 +51,6 @@ public class AnneiListParser {
 
         // タイトル-------------------------------
         Element p = content_wrap_children.first();
-//        result.setTitle(getTitle(p));
         linerStatusList.setComment(getTitle(p));
 
         Element ul = content_wrap_children.get(1);
@@ -68,7 +61,6 @@ public class AnneiListParser {
         ArrayList<Port> array = getAnneiPortArray();
         for (Port port : array)
             statusList.add(getPort(port, li));
-//        result.setLiners(mLiners);
         linerStatusList.setLinerStatusList(statusList);
         return linerStatusList;
     }
@@ -81,7 +73,6 @@ public class AnneiListParser {
      */
     private static String getUpdateTime(Element h3) {
         Elements span = h3.getElementsByTag("span");
-        Log.d("AnneiListParser", span.get(0).text());
         return span.get(0).text();
     }
 
@@ -152,7 +143,7 @@ public class AnneiListParser {
                     statusInfo.setStatusText(spanStatus.text());
                 }
                 linerStatus.setStatusInfo(statusInfo);
-                
+
                 // コメント
                 if (note != null) {
                     linerStatus.setComment(note.text());
