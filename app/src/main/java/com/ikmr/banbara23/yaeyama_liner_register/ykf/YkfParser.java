@@ -28,7 +28,6 @@ public class YkfParser {
         }
         LinerStatusList linerStatusList = new LinerStatusList();
         linerStatusList.setCompany(Company.YKF);
-//        Result result = new Result();
         linerStatusList.setCompany(Company.YKF);
 
         // トップコメント
@@ -37,14 +36,12 @@ public class YkfParser {
         // 2016年06月08日 (水) 13:26現在　という感じになる
         linerStatusList.setUpdateDateTime(parsUpdateTime(doc));
 
-//        ArrayList<Liner> mLiners = new ArrayList<>();
         List<LinerStatus> linerStatuses = new ArrayList<>();
         ArrayList<Port> array = getYkfPortArray();
         // 一覧のパース
         for (Port port : array) {
             linerStatuses.add(parsLiner(port, doc));
         }
-//        result.setLiners(mLiners);
         linerStatusList.setLinerStatusList(linerStatuses);
         KLog.d(linerStatusList.toString());
         return linerStatusList;
@@ -87,11 +84,8 @@ public class YkfParser {
      */
     private static LinerStatus parsLiner(Port port, Document document) {
         LinerStatus linerStatus = new LinerStatus();
-//        Liner liner = new Liner();
-//        liner.setPort(port);]
         linerStatus.setPort(port);
 
-//        liner.setStatus(parsStatus(port, document));
         Status status = parsStatus(port, document);
         String statusText = parsStatusText(port, document);
         String statusComment = parsStatusComment(port, document);
