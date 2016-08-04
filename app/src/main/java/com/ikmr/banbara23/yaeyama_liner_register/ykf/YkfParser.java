@@ -1,11 +1,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.ykf;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.StatusInfo;
 import com.socks.library.KLog;
 
 import org.jsoup.nodes.Document;
@@ -14,6 +14,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 八重山観光フェリーのHTMLパースクラス
@@ -26,22 +27,26 @@ public class YkfParser {
             return null;
         }
         LinerStatusList linerStatusList = new LinerStatusList();
-        Result result = new Result();
-        result.setCompany(Company.YKF);
+        linerStatusList.setCompany(Company.YKF);
+//        Result result = new Result();
+        linerStatusList.setCompany(Company.YKF);
 
         // トップコメント
-        result.setTitle(parsTopComment(doc));
+        linerStatusList.setComment(parsTopComment(doc));
 
         // 2016年06月08日 (水) 13:26現在　という感じになる
-        result.setUpdateTime(parsUpdateTime(doc));
+        linerStatusList.setUpdateDateTime(parsUpdateTime(doc));
 
-        ArrayList<Liner> mLiners = new ArrayList<>();
+//        ArrayList<Liner> mLiners = new ArrayList<>();
+        List<LinerStatus> linerStatuses = new ArrayList<>();
         ArrayList<Port> array = getYkfPortArray();
         // 一覧のパース
         for (Port port : array) {
-            mLiners.add(parsLiner(port, doc));
+            linerStatuses.add(parsLiner(port, doc));
         }
-        result.setLiners(mLiners);
+//        result.setLiners(mLiners);
+        linerStatusList.setLinerStatusList(linerStatuses);
+        KLog.d(linerStatusList.toString());
         return linerStatusList;
     }
 
@@ -80,16 +85,24 @@ public class YkfParser {
      * @param document html
      * @return 指定した港の運行情報
      */
-    private static Liner parsLiner(Port port, Document document) {
-        Liner liner = new Liner();
-        liner.setPort(port);
+    private static LinerStatus parsLiner(Port port, Document document) {
+        LinerStatus linerStatus = new LinerStatus();
+//        Liner liner = new Liner();
+//        liner.setPort(port);]
+        linerStatus.setPort(port);
 
-        liner.setStatus(parsStatus(port, document));
+//        liner.setStatus(parsStatus(port, document));
+        Status status = parsStatus(port, document);
         String statusText = parsStatusText(port, document);
         String statusComment = parsStatusComment(port, document);
-        liner.setText(statusText + " " + statusComment);
-        KLog.d("Ykf liner", liner.toString());
-        return liner;
+        StatusInfo statusInfo = new StatusInfo();
+        statusInfo.setStatus(status);
+        statusInfo.setStatusText(statusText);
+
+        linerStatus.setStatusInfo(statusInfo);
+        linerStatus.setComment(statusComment);
+
+        return linerStatus;
     }
 
     /***
