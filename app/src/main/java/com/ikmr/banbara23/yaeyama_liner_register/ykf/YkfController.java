@@ -33,7 +33,7 @@ public class YkfController {
                     public void onNext(LinerStatusList linerStatusList) {
                         Log.d("YkfController", "YkfList:onNext");
                         // 取得成功
-//                        YkfListApiClient.post(result);
+                        YkfListApiClient.post(linerStatusList);
                     }
                 });
     }

@@ -5,9 +5,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
+import com.ikmr.banbara23.yaeyama_liner_register.NcmbUtil;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -59,15 +59,16 @@ public class YkfListApiClient {
                 .subscribeOn(Schedulers.newThread());
     }
 
-    public static void post(final Result result) {
-        final String json = new Gson().toJson(result);
-        final String key = Base.getResources().getString(R.string.pref_ykf_result_key);
-        if (isEqualForLastTime(json, key)) {
-            return;
-        }
+    public static void post(final LinerStatusList linerStatusList) {
+        final String json = new Gson().toJson(linerStatusList);
+//        final String key = Base.getResources().getString(R.string.pref_ykf_result_key);
+//        if (isEqualForLastTime(json, key)) {
+//            return;
+//        }
 
         NCMBObject obj = new NCMBObject(Base.getResources().getString(R.string.NCMB_ykf_table));
-        obj.put("result_json", json);
+        obj.put(Base.getResources().getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
+        obj.put(Base.getResources().getString(R.string.NCMB_column_entity_json), json);
 
         obj.saveInBackground(new DoneCallback() {
             @Override
@@ -75,8 +76,6 @@ public class YkfListApiClient {
                 if (e == null) {
                     // 保存成功
                     Log.d("YkfListApiClient", "YkfList 送信成功");
-                    Log.d("YkfListApiClient", "result:" + result.toString());
-                    PreferenceUtils.put(key, json);
                 } else {
                     Log.e("YkfListApiClient", e.getMessage());
                     // 保存失敗
