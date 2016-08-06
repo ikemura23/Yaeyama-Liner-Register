@@ -2,6 +2,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
@@ -18,8 +19,9 @@ import java.util.ArrayList;
  */
 public class DreamListParser {
 
-    public static Result pars(Document doc) {
+    public static LinerStatusList pars(Document doc) {
 
+        LinerStatusList linerStatusList = new LinerStatusList();
         Result result = new Result();
         result.setCompany(Company.DREAM);
 
@@ -56,7 +58,7 @@ public class DreamListParser {
         //
         result.setLiners(mLiners);
 
-        return result;
+        return linerStatusList;
     }
 
     private static String getTitle(Document doc) {

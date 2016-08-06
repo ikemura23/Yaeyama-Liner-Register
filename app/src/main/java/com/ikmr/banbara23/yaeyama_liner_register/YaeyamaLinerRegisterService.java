@@ -9,7 +9,6 @@ import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -40,8 +39,8 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         try {
             KLog.d("execTask");
 //            startAnneiListQuery();
-            YkfController.start();
-//            startDreamListQuery();
+//            YkfController.start();
+            startDreamListQuery();
 //            WeatherController.start();
 //            HtmlController.start();
         } catch (Exception e) {
@@ -142,8 +141,8 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
      */
     private void startDreamListQuery() {
 
-        DreamStatusListApi.request(getString(R.string.url_dream_list))
-                .subscribe(new Subscriber<Result>() {
+        new DreamStatusListApi().request(getString(R.string.url_dream_list))
+                .subscribe(new Subscriber<LinerStatusList>() {
                     @Override
                     public void onCompleted() {
                         // 完了
@@ -158,31 +157,32 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     }
 
                     @Override
-                    public void onNext(Result result) {
+                    public void onNext(LinerStatusList linerStatusList) {
                         // 取得成功
                         Log.d("MainActivity", "DreamList:onNext");
-                        Log.d("YaeyamaLinerRegisterSer", "result:" + result);
-                        saveDreamListResult(result);
+                        Log.d("YaeyamaLinerRegisterSer", "result:" + linerStatusList);
+                        saveDreamListResult(linerStatusList);
                     }
                 });
     }
 
-    private void saveDreamListResult(final Result result) {
-        if (isEqualForLastTimeResult(result, getString(R.string.pref_dream_result_key))) {
-            return;
-        }
+    private void saveDreamListResult(LinerStatusList linerStatusList) {
+//        if (isEqualForLastTimeResult(result, getString(R.string.pref_dream_result_key))) {
+//            return;
+//        }
 
         NCMBObject obj = new NCMBObject(getString(R.string.NCMB_dream_table));
-        obj.put("result_json", convertResultToString(result));
-
+        String json = new Gson().toJson(linerStatusList);
+        obj.put(Base.getResources().getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
+        obj.put(Base.getResources().getString(R.string.NCMB_column_entity_json), json);
         obj.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
                     // 保存成功
                     Log.d("MainActivity", "DreamList 保存成功");
-                    Log.d("MainActivity", "result:" + result.toString());
-                    saveResultToPref(result, getString(R.string.pref_dream_result_key));
+//                    Log.d("MainActivity", "result:" + result.toString());
+//                    saveResultToPref(result, getString(R.string.pref_dream_result_key));
                 } else {
                     // 保存失敗
                     Log.d("MainActivity", "DreamList 保存失敗 :" + e);

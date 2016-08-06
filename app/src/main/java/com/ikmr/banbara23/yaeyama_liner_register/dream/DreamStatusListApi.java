@@ -2,7 +2,7 @@
 package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +25,7 @@ public class DreamStatusListApi {
      * @return Observable<Result>
      * @param url 一覧url
      */
-    public static Observable<Result> request(final String url) {
+    public Observable<LinerStatusList> request(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
@@ -40,9 +40,9 @@ public class DreamStatusListApi {
                         }
                     }
                 })
-                .map(new Func1<Document, Result>() {
+                .map(new Func1<Document, LinerStatusList>() {
                     @Override
-                    public Result call(Document document) {
+                    public LinerStatusList call(Document document) {
                         return DreamListParser.pars(document);
                     }
                 })
