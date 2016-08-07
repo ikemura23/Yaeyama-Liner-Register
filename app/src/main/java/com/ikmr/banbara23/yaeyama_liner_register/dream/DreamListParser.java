@@ -2,10 +2,11 @@ package com.ikmr.banbara23.yaeyama_liner_register.dream;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.StatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
 
 import org.jsoup.nodes.Document;
@@ -13,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 安栄HTMLのパース処理
@@ -22,15 +24,15 @@ public class DreamListParser {
     public static LinerStatusList pars(Document doc) {
 
         LinerStatusList linerStatusList = new LinerStatusList();
-        Result result = new Result();
-        result.setCompany(Company.DREAM);
+//        Result result = new Result();
+        linerStatusList.setCompany(Company.DREAM);
 
         // <div id="liner"> 取得
         if (doc == null) {
             return null;
         }
         // コメントを取得
-        result.setTitle(getTitle(doc));
+        linerStatusList.setComment(getComment(doc));
 
         // divのclass名statusAreaを取得
         Elements statusArea = doc.getElementsByClass("statusArea");
@@ -48,20 +50,21 @@ public class DreamListParser {
 
         // 更新日時
         ul.child(ul.children().size() - 1);
-        result.setUpdateTime(getUpdateTime(ul));
+        linerStatusList.setUpdateDateTime(getUpdateTime(ul));
 
         ArrayList<Liner> mLiners = new ArrayList<>();
+        List<LinerStatus> linerStatuses = new ArrayList<>();
         //
         ArrayList<Port> array = getPortArray();
         for (Port port : array)
-            mLiners.add(getDivPort(port, ul));
+            linerStatuses.add(getDivPort(port, ul));
         //
-        result.setLiners(mLiners);
+        linerStatusList.setLinerStatusList(linerStatuses);
 
         return linerStatusList;
     }
 
-    private static String getTitle(Document doc) {
+    private static String getComment(Document doc) {
         Element ul = doc.getElementById("ticker_area");
         return ul.text();
     }
@@ -71,11 +74,12 @@ public class DreamListParser {
      *
      * @param targetPort 欲しい港
      * @param ul         HPの港一覧
-     * @return
+     * @return linerStatus 指定した港の一覧用運航状況
      */
-    private static Liner getDivPort(Port targetPort, Element ul) {
-        Liner liner = new Liner();
-        liner.setPort(targetPort);
+    private static LinerStatus getDivPort(Port targetPort, Element ul) {
+        LinerStatus linerStatus = new LinerStatus();
+//        Liner liner = new Liner();
+        linerStatus.setPort(targetPort);
 
         for (Element li : ul.children()) {
             if (isEmptyElement(li)) {
@@ -88,28 +92,45 @@ public class DreamListParser {
                 continue;
             }
 
-            Element firstDiv = li.child(0);
+            //ステータス
+            Elements divElements = li.getElementsByTag("div");
+            Element firstDiv = divElements.first();
             if (isEmptyElement(firstDiv)) {
                 continue;
             }
 
+            StatusInfo statusInfo = new StatusInfo();
             String comment;
+
             if (firstDiv.children().size() > 1) {
-                liner.setStatus(parsStatus(firstDiv.child(1))); // ステータスを取得
-                comment = firstDiv.child(1).text();             // コメントを取得
+                statusInfo.setStatus(parsStatus(firstDiv.child(1)));    // ステータスを取得
+                comment = firstDiv.child(1).text();                     // コメントを取得
             } else {
-                liner.setStatus(parsStatus(li.child(1)));       // ステータスを取得
-                comment = li.child(1).text();                   // コメントを取得
+                // プレミアムドリーム、スーパードリーム専用
+                Element span = firstDiv.getElementsByTag("span").first();
+                if (isEmptyElement(span)) {
+                    continue;
+                }
+                statusInfo.setStatus(parsStatus(span));         // ステータスを取得
+                comment = span.text();                          // コメントを取得
             }
-            liner.setText(comment);
+            statusInfo.setStatusText(comment);  //ステータスコメント
+
+            //コメント
+            if (divElements.size() > 1) {
+                Element secondDiv = divElements.get(1);
+                linerStatus.setComment(secondDiv.text());
+            }
+
+            linerStatus.setStatusInfo(statusInfo);
 
             // Linerに値がちゃんと入っていればforから抜ける
-            if (liner.getPort() != null && liner.getText() != null) {
-                return liner;
+            if (linerStatus.getPort() != null && linerStatus.getComment() != null) {
+                return linerStatus;
             }
         }
 
-        return liner;
+        return linerStatus;
     }
 
     /**
