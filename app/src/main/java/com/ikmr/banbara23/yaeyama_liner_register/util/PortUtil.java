@@ -410,9 +410,9 @@ public class PortUtil {
             case HATOMA_UEHARA:
                 return context.getString(R.string.route_uehara_hatoma);
             case SUPER_DREAM:
-                return port.getPort();
+                return port.getName();
             case PREMIUM_DREAM:
-                return port.getPort();
+                return port.getName();
             default:
                 return null;
         }

@@ -2,9 +2,11 @@
 package com.ikmr.banbara23.yaeyama_liner_register.util;
 
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
-import com.ikmr.banbara23.yaeyama_liner_register.util.StringUtils;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 /**
@@ -16,31 +18,17 @@ public class ParseUtil {
         if (StringUtils.isEmpty(text))
             return null;
 
-        Port port = text.startsWith(Port.HATERUMA.getPortSimple()) ? Port.HATERUMA
-                : text.startsWith(Port.KUROSHIMA.getPortSimple()) ? Port.KUROSHIMA
-                : text.startsWith(Port.HATOMA_UEHARA.getPortSimple()) ? Port.HATOMA_UEHARA
-                : text.startsWith(Port.UEHARA.getPortSimple()) ? Port.UEHARA
-                : text.startsWith(Port.HATOMA.getPortSimple()) ? Port.HATOMA
-                : text.startsWith(Port.KOHAMA.getPortSimple()) ? Port.KOHAMA
+        return text.startsWith(Port.HATERUMA.getSimpleName()) ? Port.HATERUMA
+                : text.startsWith(Port.KUROSHIMA.getSimpleName()) ? Port.KUROSHIMA
+                : text.startsWith(Port.HATOMA_UEHARA.getSimpleName()) ? Port.HATOMA_UEHARA
+                : text.startsWith(Port.UEHARA.getSimpleName()) ? Port.UEHARA
+                : text.startsWith(Port.HATOMA.getSimpleName()) ? Port.HATOMA
+                : text.startsWith(Port.KOHAMA.getSimpleName()) ? Port.KOHAMA
                 : text.startsWith("西表島・大原") ? Port.OOHARA
-                : text.startsWith(Port.TAKETOMI.getPortSimple()) ? Port.TAKETOMI
-                : text.startsWith(Port.PREMIUM_DREAM.getPortSimple()) ? Port.PREMIUM_DREAM
-                : text.startsWith(Port.SUPER_DREAM.getPortSimple()) ? Port.SUPER_DREAM
+                : text.startsWith(Port.TAKETOMI.getSimpleName()) ? Port.TAKETOMI
+                : text.startsWith(Port.PREMIUM_DREAM.getSimpleName()) ? Port.PREMIUM_DREAM
+                : text.startsWith(Port.SUPER_DREAM.getSimpleName()) ? Port.SUPER_DREAM
                 : null;
-
-//        Port port = text.contains(Port.HATERUMA.getPortSimple()) ? Port.HATERUMA
-//                : text.contains(Port.KUROSHIMA.getPortSimple()) ? Port.KUROSHIMA
-//                : text.contains(Port.HATOMA_UEHARA.getPortSimple()) ? Port.HATOMA_UEHARA
-//                : text.contains(Port.UEHARA.getPortSimple()) ? Port.UEHARA
-//                : text.contains(Port.HATOMA.getPortSimple()) ? Port.HATOMA
-//                : text.contains(Port.KOHAMA.getPortSimple()) ? Port.KOHAMA
-//                : text.contains(Port.OOHARA.getPortSimple()) ? Port.OOHARA
-//                : text.contains(Port.TAKETOMI.getPortSimple()) ? Port.TAKETOMI
-//                : text.contains(Port.PREMIUM_DREAM.getPortSimple()) ? Port.PREMIUM_DREAM
-//                : text.contains(Port.SUPER_DREAM.getPortSimple()) ? Port.SUPER_DREAM
-//                : null;
-
-        return port;
     }
 
     public static boolean isEmptyElements(Elements elements) {

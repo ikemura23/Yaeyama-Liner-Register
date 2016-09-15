@@ -6,8 +6,13 @@ import java.util.ArrayList;
  * 港詳細の時間別ステータス
  */
 public class LinerRecord {
+    // 港
     Port port;
+    // 運行記録の一覧
     ArrayList<Record> recordList;
+
+    public LinerRecord() {
+    }
 
     public Port getPort() {
         return port;
@@ -33,3 +38,4 @@ public class LinerRecord {
                 '}';
     }
 }
+
