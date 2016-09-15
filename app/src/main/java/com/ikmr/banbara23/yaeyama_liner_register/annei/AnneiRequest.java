@@ -57,7 +57,7 @@ public class AnneiRequest {
                 });
     }
 
-    public Observable<Document> request(final String url) {
+    private Observable<Document> request(final String url) {
         return Observable
                 .create(new Observable.OnSubscribe<Document>() {
                     @Override
