@@ -1,22 +1,27 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class LinerStatusDetailList {
-    List<ResultDetail> resultDetailList;
+public class LinerStatusDetailList extends LinerInfo {
+    List<LinerStatusDetail> linerStatusDetails;
 
-    public List<ResultDetail> getResultDetailList() {
-        return resultDetailList;
+    public LinerStatusDetailList() {
+        linerStatusDetails = new ArrayList<>();
     }
 
-    public void setResultDetailList(List<ResultDetail> resultDetailList) {
-        this.resultDetailList = resultDetailList;
+    public List<LinerStatusDetail> getLinerStatusDetails() {
+        return linerStatusDetails;
+    }
+
+    public void setLinerStatusDetails(List<LinerStatusDetail> linerStatusDetails) {
+        this.linerStatusDetails = linerStatusDetails;
     }
 
     @Override
     public String toString() {
         return "LinerStatusDetailList{" +
-                "resultDetailList=" + resultDetailList +
+                "linerStatusDetails=" + linerStatusDetails +
                 '}';
     }
 }

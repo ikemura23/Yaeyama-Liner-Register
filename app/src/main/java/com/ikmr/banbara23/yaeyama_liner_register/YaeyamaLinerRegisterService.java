@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiRequest;
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AneiRequest;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
@@ -39,7 +39,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             KLog.d("execTask");
-            new AnneiRequest().start();
+            new AneiRequest().start();
 //            startAnneiListQuery();
 //            YkfController.start();
 //            startDreamListQuery();

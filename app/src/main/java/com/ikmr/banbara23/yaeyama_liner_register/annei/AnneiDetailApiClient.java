@@ -42,7 +42,7 @@ public class AnneiDetailApiClient {
 //                .map(new Func1<Document, ResultDetail>() {
 //                    @Override
 //                    public ResultDetail call(Document document) {
-//                        return AnneiDetailParser.pars(document, port);
+//                        return AnneiDetailParser.getEntity(document, port);
 //                    }
 //                })
 //                .subscribeOn(Schedulers.newThread());

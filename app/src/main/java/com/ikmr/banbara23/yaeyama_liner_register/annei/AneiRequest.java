@@ -7,7 +7,12 @@ import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.NcmbUtil;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerRecordInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetail;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetailList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
+import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -17,13 +22,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AnneiRequest {
+public class AneiRequest {
+
+    private static final String DETAIL_TABLE_NAME = "AneiLinerStatusDetail";
 
     private String getString(int resId) {
         return Base.getContext().getString(resId);
@@ -38,21 +46,21 @@ public class AnneiRequest {
                     @Override
                     public void onCompleted() {
                         // 完了
-                        KLog.d("MainActivity", "AnneiList:onCompleted");
+                        KLog.d("AneiRequest", "AnneiList:onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         // 失敗
-                        KLog.d("MainActivity", "AnneiList:onError");
-                        KLog.d("MainActivity", "AnneiList:e:" + e);
+                        KLog.d("AneiRequest", "AnneiList:onError");
+                        KLog.d("AneiRequest", "AnneiList:e:" + e);
                     }
 
                     @Override
                     public void onNext(Document document) {
                         // 成功
-                        KLog.d("MainActivity", "AnneiList:onNext");
-                        parse(document);
+                        KLog.d("AneiRequest", "AnneiList:onNext");
+                        pars(document);
                     }
                 });
     }
@@ -74,14 +82,33 @@ public class AnneiRequest {
                 });
     }
 
-    private void parse(Document document) {
+    private void pars(Document document) {
+        // 一覧
         LinerStatusList linerStatusLis = new AnneiListParser().pars(document);
-        sendNcmbList(linerStatusLis);
+        if (linerStatusLis == null) {
+            return;
+        }
+        sendList(linerStatusLis);
 
-        // TODO: 2016/09/15 詳細パース
+        // 詳細
+        LinerStatusDetailList linerStatusDetailList = new LinerStatusDetailList();
+        List<LinerStatusDetail> linerStatusDetails = linerStatusDetailList.getLinerStatusDetails();
+
+        for (LinerStatus linerStatus : linerStatusLis.getLinerStatusList()) {
+            LinerStatusDetail linerStatusDetail = new LinerStatusDetail();
+            linerStatusDetail.setPort(linerStatus.getPort());
+            linerStatusDetail.setComment(linerStatus.getComment());
+            linerStatusDetail.setStatusInfo(linerStatus.getStatusInfo());
+
+            LinerRecordInfo linerRecordInfo = new AnneiDetailParser().getEntity(document, linerStatus.getPort());
+            linerStatusDetail.setLinerRecordInfo(linerRecordInfo);
+
+            linerStatusDetails.add(linerStatusDetail);
+        }
+        sendDetails(linerStatusDetailList);
     }
 
-    private void sendNcmbList(final LinerStatusList linerStatusList) {
+    private void sendList(final LinerStatusList linerStatusList) {
         if (linerStatusList == null) {
             return;
         }
@@ -96,13 +123,29 @@ public class AnneiRequest {
             public void done(NCMBException e) {
                 if (e == null) {
                     // 保存成功
-                    Log.d("MainActivity", "AnneiList 保存成功");
-                    Log.d("MainActivity", "result:" + linerStatusList.toString());
+                    Log.d("AneiRequest", "detail 保存成功");
+                    Log.d("AneiRequest", "detail:" + linerStatusList.toString());
                 } else {
                     // 保存失敗
-                    Log.d("MainActivity", "AnneiList 保存失敗 :" + e);
+                    Log.d("AneiRequest", "detail 保存失敗 :" + e);
                 }
             }
         });
+    }
+
+    private void sendDetails(final LinerStatusDetailList linerStatusDetailList) {
+
+        NCMBObject ncmbObject = new NCMBObject(DETAIL_TABLE_NAME);
+        for (LinerStatusDetail linerStatusDetail : linerStatusDetailList.getLinerStatusDetails()) {
+            // key = 港名, value = 港単体の詳細パース
+            ncmbObject.put(
+                    linerStatusDetail.getPort().getPortEn(),
+                    new Gson().toJson(linerStatusDetail));
+        }
+        try {
+            ncmbObject.save();
+        } catch (NCMBException e) {
+            e.printStackTrace();
+        }
     }
 }

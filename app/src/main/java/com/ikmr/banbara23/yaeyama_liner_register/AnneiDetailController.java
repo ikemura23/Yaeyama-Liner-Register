@@ -2,8 +2,6 @@ package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiDetailParser;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiParsHelper;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetailList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
@@ -44,7 +42,7 @@ public class AnneiDetailController {
                         List<Port> portList = AnneiParsHelper.getTargetPortList();
                         List<ResultDetail> resultDetailList = new ArrayList<>();
                         for (Port port : portList) {
-                            resultDetailList.add(AnneiDetailParser.pars(document, port));
+//                            resultDetailList.add(AnneiDetailParser.getEntity(document, port));
                         }
                         subscriber.onNext(resultDetailList);
                         subscriber.onCompleted();
@@ -64,10 +62,10 @@ public class AnneiDetailController {
 
                     @Override
                     public void onNext(List<ResultDetail> resultDetailList) {
-                        LinerStatusDetailList linerStatusDetailList = new LinerStatusDetailList();
-                        linerStatusDetailList.setResultDetailList(resultDetailList);
-                        Log.i("AnneiDetailController", "onNext " + linerStatusDetailList);
-                        sendNcmbAndSaveLocal(linerStatusDetailList);
+//                        LinerStatusDetailList linerStatusDetailList = new LinerStatusDetailList();
+//                        linerStatusDetailList.setResultDetailList(resultDetailList);
+//                        Log.i("AnneiDetailController", "onNext " + linerStatusDetailList);
+//                        sendNcmbAndSaveLocal(linerStatusDetailList);
                     }
                 });
     }
@@ -77,12 +75,12 @@ public class AnneiDetailController {
 //            return;
 //        }
         NCMBObject ncmbObject = new NCMBObject(DETAIL_TABLE_NAME);
-        for (ResultDetail resultDetail : linerStatusDetailList.getResultDetailList()) {
-            // key = 港名, value = 港単体の詳細パース
-            ncmbObject.put(
-                    resultDetail.getPort().getPortEn(),
-                    new Gson().toJson(resultDetail));
-        }
+//        for (ResultDetail resultDetail : linerStatusDetailList.getResultDetailList()) {
+//            // key = 港名, value = 港単体の詳細パース
+//            ncmbObject.put(
+//                    resultDetail.getPort().getPortEn(),
+//                    new Gson().toJson(resultDetail));
+//        }
         ncmbObject.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {

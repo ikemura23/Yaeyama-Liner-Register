@@ -5,6 +5,8 @@ import android.util.Log;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerRecord;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerRecordInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetail;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Record;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.ResultDetail;
@@ -26,19 +28,18 @@ public class AnneiDetailParser {
     private static Document document;
     private static Port port;
 
-    public static ResultDetail pars(Document doc, Port pt) {
+    public  LinerRecordInfo getEntity(Document doc, Port pt) {
         document = doc;
         port = pt;
-        ResultDetail resultDetail = new ResultDetail();
+//        ResultDetail resultDetail = new ResultDetail();
 
-        resultDetail.setCompany(Company.ANNEI);
-        resultDetail.setPort(port);
-        resultDetail.setStatus(parsStatus());
-        resultDetail.setStatusText(parsStatusText());
-        resultDetail.setLinerRecordInfo(parsLinerRecordInfo());
+//        resultDetail.setCompany(Company.ANNEI);
+//        resultDetail.setPort(port);
+//        resultDetail.setStatus(parsStatus());
+//        resultDetail.setStatusText(parsStatusText());
+//        resultDetail.setLinerRecordInfo(parsLinerRecordInfo());
 
-        document = null;
-        return resultDetail;
+        return parsLinerRecordInfo();
     }
 
     /**
