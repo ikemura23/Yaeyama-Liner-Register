@@ -1,4 +1,3 @@
-
 package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import android.text.TextUtils;
@@ -22,48 +21,6 @@ import java.util.List;
  * 安栄HTMLのパース処理
  */
 public class AnneiListParser {
-
-    public LinerStatusList pars(Document doc) {
-        if (doc == null) {
-            return null;
-        }
-
-        LinerStatusList linerStatusList = new LinerStatusList();
-
-        // 会社 --------------------
-        linerStatusList.setCompany(Company.ANNEI);
-
-        // 更新日-------------------------------
-        Elements h3s = doc.getElementsByTag("h3");
-        if (ParseUtil.isEmptyElements(h3s))
-            return null;
-        linerStatusList.setUpdateDateTime(getUpdateTime(h3s.first()));
-
-        // content_wrapクラスを取得
-        Elements content_wraps = doc.getElementsByClass("content_wrap");
-        if (ParseUtil.isEmptyElements(content_wraps))
-            return null;
-
-        // content_wrapの配下を取得
-        Elements content_wrap_children = content_wraps.first().children();
-        if (ParseUtil.isEmptyElements(content_wrap_children))
-            return null;
-
-        // タイトル-------------------------------
-        Element p = content_wrap_children.first();
-        linerStatusList.setComment(getTitle(p));
-
-        Element ul = content_wrap_children.get(1);
-        Elements li = ul.getElementsByTag("li");
-
-        List<LinerStatus> statusList = new ArrayList<>();
-        // // 港別の運航状況
-        ArrayList<Port> array = getAnneiPortArray();
-        for (Port port : array)
-            statusList.add(getPort(port, li));
-        linerStatusList.setLinerStatusList(statusList);
-        return linerStatusList;
-    }
 
     /**
      * 更新日時の取得
@@ -118,7 +75,7 @@ public class AnneiListParser {
                 continue;
             }
             // spanタグのテキストが港と一致しているか？
-            if (spanPort.text().contains(port.getPortSimple())) {
+            if (spanPort.text().contains(port.getSimpleName())) {
                 Elements note = liChild.get(2).getElementsByClass("note");
                 StatusInfo statusInfo = new StatusInfo();
                 // 運航ステータスの判定-------------------------------
@@ -165,5 +122,47 @@ public class AnneiListParser {
         list.add(Port.HATOMA);
         list.add(Port.HATERUMA);
         return list;
+    }
+
+    public LinerStatusList pars(Document doc) {
+        if (doc == null) {
+            return null;
+        }
+
+        LinerStatusList linerStatusList = new LinerStatusList();
+
+        // 会社 --------------------
+        linerStatusList.setCompany(Company.ANNEI);
+
+        // 更新日-------------------------------
+        Elements h3s = doc.getElementsByTag("h3");
+        if (ParseUtil.isEmptyElements(h3s))
+            return null;
+        linerStatusList.setUpdateDateTime(getUpdateTime(h3s.first()));
+
+        // content_wrapクラスを取得
+        Elements content_wraps = doc.getElementsByClass("content_wrap");
+        if (ParseUtil.isEmptyElements(content_wraps))
+            return null;
+
+        // content_wrapの配下を取得
+        Elements content_wrap_children = content_wraps.first().children();
+        if (ParseUtil.isEmptyElements(content_wrap_children))
+            return null;
+
+        // タイトル-------------------------------
+        Element p = content_wrap_children.first();
+        linerStatusList.setComment(getTitle(p));
+
+        Element ul = content_wrap_children.get(1);
+        Elements li = ul.getElementsByTag("li");
+
+        List<LinerStatus> statusList = new ArrayList<>();
+        // // 港別の運航状況
+        ArrayList<Port> array = getAnneiPortArray();
+        for (Port port : array)
+            statusList.add(getPort(port, li));
+        linerStatusList.setLinerStatusList(statusList);
+        return linerStatusList;
     }
 }

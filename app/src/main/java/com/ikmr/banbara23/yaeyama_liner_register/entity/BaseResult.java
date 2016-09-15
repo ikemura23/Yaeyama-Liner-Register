@@ -1,18 +1,13 @@
 
 package com.ikmr.banbara23.yaeyama_liner_register.entity;
 
-/**
- * 運行詳細クラス
- */
-public class ResultDetail extends BaseResult {
+public class BaseResult {
 
-    LinerRecordInfo linerRecordInfo;
+    Company company;
+    Port port;
+    Status status;
+    String statusText;
 
-    public ResultDetail() {
-    }
-
-    // ゲッターセッター
-    // /////////////////////////////////////////////////////////////////
     public Company getCompany() {
         return company;
     }
@@ -45,22 +40,13 @@ public class ResultDetail extends BaseResult {
         this.statusText = statusText;
     }
 
-    public LinerRecordInfo getLinerRecordInfo() {
-        return linerRecordInfo;
-    }
-
-    public void setLinerRecordInfo(LinerRecordInfo linerRecordInfo) {
-        this.linerRecordInfo = linerRecordInfo;
-    }
-
     @Override
     public String toString() {
-        return "ResultDetail{" +
+        return "BaseResult{" +
                 "company=" + company +
                 ", port=" + port +
                 ", status=" + status +
                 ", statusText='" + statusText + '\'' +
-                ", linerRecordInfo=" + linerRecordInfo +
                 '}';
     }
 }
