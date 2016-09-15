@@ -2,15 +2,10 @@ package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
 import android.util.Log;
 
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerRecord;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerRecordInfo;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetail;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Record;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.ResultDetail;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.StatusInfo;
 import com.socks.library.KLog;
 
@@ -28,51 +23,6 @@ public class AnneiDetailParser {
     private static Document document;
     private static Port port;
 
-    public  LinerRecordInfo getEntity(Document doc, Port pt) {
-        document = doc;
-        port = pt;
-//        ResultDetail resultDetail = new ResultDetail();
-
-//        resultDetail.setCompany(Company.ANNEI);
-//        resultDetail.setPort(port);
-//        resultDetail.setStatus(parsStatus());
-//        resultDetail.setStatusText(parsStatusText());
-//        resultDetail.setLinerRecordInfo(parsLinerRecordInfo());
-
-        return parsLinerRecordInfo();
-    }
-
-    /**
-     * ステータス
-     *
-     * @return enum
-     */
-    private static Status parsStatus() {
-        try {
-            String query = AnneiParsHelper.getStatusQuery(port);
-            Element element = document.select(query).first();
-            return AnneiParsHelper.getStatus(element);
-        } catch (Exception e) {
-            putErrorLog(e);
-            return null;
-        }
-    }
-
-    /**
-     * ステータス文字
-     *
-     * @return ステータス文字
-     */
-    private static String parsStatusText() {
-        try {
-            String query = AnneiParsHelper.getStatusQuery(port);
-            return document.select(query).text();
-        } catch (Exception e) {
-            putErrorLog(e);
-            return null;
-        }
-    }
-
     private static LinerRecordInfo parsLinerRecordInfo() {
         LinerRecordInfo linerRecordInfo = new LinerRecordInfo();
         linerRecordInfo.setLinerRecordLef(parsLinerRecordLeft());
@@ -86,8 +36,6 @@ public class AnneiDetailParser {
         linerRecord.setRecordList(parsLeftRecords());
         return linerRecord;
     }
-
-    // 左の列 -----------------------------------------------
 
     /**
      * 左列の石垣
@@ -142,7 +90,8 @@ public class AnneiDetailParser {
         return records;
     }
 
-    // 右の列 ---------------------------------------------
+
+    // 左の列 -----------------------------------------------
     private static LinerRecord parsLinerRecordRight() {
         LinerRecord linerRecord = new LinerRecord();
         linerRecord.setPort(port);
@@ -150,6 +99,7 @@ public class AnneiDetailParser {
         return linerRecord;
     }
 
+    // 右の列 ---------------------------------------------
     private static ArrayList<Record> parsRightRecords() {
         try {
             String query = AnneiParsHelper.getRecordQuery(port);
@@ -169,5 +119,12 @@ public class AnneiDetailParser {
     private static void putErrorLog(Exception e) {
         Log.e("AnneiDetailParser", e.getMessage());
         Log.e("AnneiDetailParser", e.getLocalizedMessage());
+    }
+
+    public LinerRecordInfo getEntity(Document doc, Port pt) {
+        document = doc;
+        port = pt;
+
+        return parsLinerRecordInfo();
     }
 }

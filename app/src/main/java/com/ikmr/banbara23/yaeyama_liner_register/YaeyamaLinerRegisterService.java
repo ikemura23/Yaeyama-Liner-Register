@@ -45,7 +45,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 //            startDreamListQuery();
 //            WeatherController.start();
 //            HtmlController.start();
-//            AnneiDetailController.start();
         } catch (Exception e) {
             KLog.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
