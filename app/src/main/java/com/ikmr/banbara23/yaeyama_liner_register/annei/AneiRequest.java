@@ -1,7 +1,5 @@
 package com.ikmr.banbara23.yaeyama_liner_register.annei;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
@@ -30,8 +28,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class AneiRequest {
-
-    private static final String DETAIL_TABLE_NAME = "AneiLinerStatusDetail";
 
     private String getString(int resId) {
         return Base.getContext().getString(resId);
@@ -112,12 +108,12 @@ public class AneiRequest {
         if (linerStatusList == null) {
             return;
         }
-        NCMBObject newObj = new NCMBObject(getString(R.string.NCMB_annei_table));
+        NCMBObject newObj = new NCMBObject(Const.NcmbTable.ANEI_LIST_TABLE);
         String linerId = NcmbUtil.getLinerId();
 
-        NCMBQuery<NCMBObject> query = new NCMBQuery<>(getString(R.string.NCMB_annei_table));
-        query.whereEqualTo("liner_id", linerId);
-        query.addOrderByDescending("updateDate");
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(Const.NcmbTable.ANEI_LIST_TABLE);
+        query.whereEqualTo(Const.NcmbColumn.LINER_ID, linerId);
+        query.addOrderByDescending(Const.NcmbColumn.UPDATE_DATE);
         List<NCMBObject> exitObj;
 
         try {
@@ -131,7 +127,7 @@ public class AneiRequest {
             // なければ新規登録
         } else if (exitObj.size() == 1) {
             // 1件だけ存在したらデータ更新
-            String oldObjId = exitObj.get(0).getString("liner_id");
+            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.LINER_ID);
             newObj.setObjectId(oldObjId);
         } else {
             // 複数件あれば一旦全削除して新規登録
@@ -144,20 +140,19 @@ public class AneiRequest {
             }
         }
 
-        newObj.put(getString(R.string.NCMB_column_liner_id), linerId);
+        newObj.put(Const.NcmbColumn.LINER_ID, linerId);
         String json = new Gson().toJson(linerStatusList);
 
-        newObj.put(getString(R.string.NCMB_column_entity_json), json);
+        newObj.put(Const.NcmbColumn.JSON, json);
         newObj.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
                     // 保存成功
-                    Log.d("AneiRequest", "detail 保存成功");
-                    Log.d("AneiRequest", "detail:" + linerStatusList.toString());
+                    KLog.d("安栄一覧：送信成功");
                 } else {
                     // 保存失敗
-                    Log.d("AneiRequest", "AneiList 保存失敗 :" + e);
+                    KLog.d("安栄一覧：送信失敗 " + e);
                 }
             }
         });
@@ -167,12 +162,12 @@ public class AneiRequest {
         if (linerStatusDetailList == null) {
             return;
         }
-        NCMBObject newObj = new NCMBObject(DETAIL_TABLE_NAME);
+        NCMBObject newObj = new NCMBObject(Const.NcmbTable.ANEI_DETAIL_TABLE);
         String linerId = NcmbUtil.getLinerId();
 
-        NCMBQuery<NCMBObject> query = new NCMBQuery<>(DETAIL_TABLE_NAME);
-        query.whereEqualTo("liner_id", linerId);
-        query.addOrderByDescending("updateDate");
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(Const.NcmbTable.ANEI_DETAIL_TABLE);
+        query.whereEqualTo(Const.NcmbColumn.LINER_ID, linerId);
+        query.addOrderByDescending(Const.NcmbColumn.UPDATE_DATE);
         List<NCMBObject> exitObj;
 
         try {
@@ -185,7 +180,7 @@ public class AneiRequest {
             // なければ新規登録
         } else if (exitObj.size() == 1) {
             // 1件だけ存在したらデータ更新
-            String oldObjId = exitObj.get(0).getString("liner_id");
+            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.LINER_ID);
             newObj.setObjectId(oldObjId);
         } else {
             // 複数件あれば一旦全削除して新規登録
@@ -198,7 +193,7 @@ public class AneiRequest {
             }
         }
 
-        newObj.put(getString(R.string.NCMB_column_liner_id),linerId);
+        newObj.put(Const.NcmbColumn.LINER_ID, linerId);
         for (LinerStatusDetail linerStatusDetail : linerStatusDetailList.getLinerStatusDetails()) {
             // key = 港名, value = 港単体の詳細パース
             newObj.put(
@@ -207,8 +202,9 @@ public class AneiRequest {
         }
         try {
             newObj.save();
+            KLog.d("安栄詳細：送信成功");
         } catch (NCMBException e) {
-            Log.d("AneiRequest", "AneiDetail 保存失敗 :" + e);
+            KLog.d("安栄詳細：送信失敗 " + e);
         }
     }
 }

@@ -43,4 +43,15 @@ public class Const {
 
     // キャッシュの保存時間(分)
     public static final int SAVE_TIME = 3;
+
+    public class NcmbTable {
+        public final static String ANEI_LIST_TABLE = "AneiLinerStatusList";
+        public final static String ANEI_DETAIL_TABLE = "AneiLinerStatusDetail";
+    }
+    public class NcmbColumn {
+        public final static String UPDATE_DATE = "updateDate";
+        public final static String LINER_ID = "linerId";
+        public final static String JSON = "json";
+    }
+
 }
