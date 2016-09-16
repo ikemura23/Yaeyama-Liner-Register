@@ -127,7 +127,7 @@ public class AneiRequest {
             // なければ新規登録
         } else if (exitObj.size() == 1) {
             // 1件だけ存在したらデータ更新
-            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.LINER_ID);
+            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.OBJECT_ID);
             newObj.setObjectId(oldObjId);
         } else {
             // 複数件あれば一旦全削除して新規登録
@@ -180,7 +180,7 @@ public class AneiRequest {
             // なければ新規登録
         } else if (exitObj.size() == 1) {
             // 1件だけ存在したらデータ更新
-            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.LINER_ID);
+            String oldObjId = exitObj.get(0).getString(Const.NcmbColumn.OBJECT_ID);
             newObj.setObjectId(oldObjId);
         } else {
             // 複数件あれば一旦全削除して新規登録

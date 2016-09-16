@@ -51,6 +51,7 @@ public class Const {
     public class NcmbColumn {
         public final static String UPDATE_DATE = "updateDate";
         public final static String LINER_ID = "linerId";
+        public final static String OBJECT_ID = "objectId";
         public final static String JSON = "json";
     }
 
