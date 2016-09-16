@@ -127,7 +127,7 @@ public class AneiRequest {
                     Log.d("AneiRequest", "detail:" + linerStatusList.toString());
                 } else {
                     // 保存失敗
-                    Log.d("AneiRequest", "detail 保存失敗 :" + e);
+                    Log.d("AneiRequest", "AneiList 保存失敗 :" + e);
                 }
             }
         });
@@ -136,6 +136,7 @@ public class AneiRequest {
     private void sendDetails(final LinerStatusDetailList linerStatusDetailList) {
 
         NCMBObject ncmbObject = new NCMBObject(DETAIL_TABLE_NAME);
+        ncmbObject.put(getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
         for (LinerStatusDetail linerStatusDetail : linerStatusDetailList.getLinerStatusDetails()) {
             // key = 港名, value = 港単体の詳細パース
             ncmbObject.put(
@@ -145,7 +146,7 @@ public class AneiRequest {
         try {
             ncmbObject.save();
         } catch (NCMBException e) {
-            e.printStackTrace();
+            Log.d("AneiRequest", "AneiDetail 保存失敗 :" + e);
         }
     }
 }
