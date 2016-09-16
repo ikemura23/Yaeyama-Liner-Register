@@ -12,10 +12,10 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetail;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusDetailList;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.LinerStatusList;
-import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.nifty.cloud.mb.core.NCMBQuery;
 import com.socks.library.KLog;
 
 import org.jsoup.Jsoup;
@@ -112,13 +112,43 @@ public class AneiRequest {
         if (linerStatusList == null) {
             return;
         }
-        NCMBObject obj = new NCMBObject(getString(R.string.NCMB_annei_table));
+        NCMBObject newObj = new NCMBObject(getString(R.string.NCMB_annei_table));
+        String linerId = NcmbUtil.getLinerId();
+
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(getString(R.string.NCMB_annei_table));
+        query.whereEqualTo("liner_id", linerId);
+        query.addOrderByDescending("updateDate");
+        List<NCMBObject> exitObj;
+
+        try {
+            exitObj = query.find();
+
+        } catch (NCMBException e) {
+            KLog.e(e);
+            return;
+        }
+        if (exitObj.size() == 0) {
+            // なければ新規登録
+        } else if (exitObj.size() == 1) {
+            // 1件だけ存在したらデータ更新
+            String oldObjId = exitObj.get(0).getString("liner_id");
+            newObj.setObjectId(oldObjId);
+        } else {
+            // 複数件あれば一旦全削除して新規登録
+            for (NCMBObject obj : exitObj) {
+                try {
+                    obj.deleteObject();
+                } catch (NCMBException e) {
+                    KLog.e(e);
+                }
+            }
+        }
+
+        newObj.put(getString(R.string.NCMB_column_liner_id), linerId);
         String json = new Gson().toJson(linerStatusList);
 
-        obj.put(getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
-        obj.put(getString(R.string.NCMB_column_entity_json), json);
-
-        obj.saveInBackground(new DoneCallback() {
+        newObj.put(getString(R.string.NCMB_column_entity_json), json);
+        newObj.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
