@@ -164,17 +164,49 @@ public class AneiRequest {
     }
 
     private void sendDetails(final LinerStatusDetailList linerStatusDetailList) {
+        if (linerStatusDetailList == null) {
+            return;
+        }
+        NCMBObject newObj = new NCMBObject(DETAIL_TABLE_NAME);
+        String linerId = NcmbUtil.getLinerId();
 
-        NCMBObject ncmbObject = new NCMBObject(DETAIL_TABLE_NAME);
-        ncmbObject.put(getString(R.string.NCMB_column_liner_id), NcmbUtil.getLinerId());
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(DETAIL_TABLE_NAME);
+        query.whereEqualTo("liner_id", linerId);
+        query.addOrderByDescending("updateDate");
+        List<NCMBObject> exitObj;
+
+        try {
+            exitObj = query.find();
+        } catch (NCMBException e) {
+            KLog.e(e);
+            return;
+        }
+        if (exitObj.size() == 0) {
+            // なければ新規登録
+        } else if (exitObj.size() == 1) {
+            // 1件だけ存在したらデータ更新
+            String oldObjId = exitObj.get(0).getString("liner_id");
+            newObj.setObjectId(oldObjId);
+        } else {
+            // 複数件あれば一旦全削除して新規登録
+            for (NCMBObject obj : exitObj) {
+                try {
+                    obj.deleteObject();
+                } catch (NCMBException e) {
+                    KLog.e(e);
+                }
+            }
+        }
+
+        newObj.put(getString(R.string.NCMB_column_liner_id),linerId);
         for (LinerStatusDetail linerStatusDetail : linerStatusDetailList.getLinerStatusDetails()) {
             // key = 港名, value = 港単体の詳細パース
-            ncmbObject.put(
+            newObj.put(
                     linerStatusDetail.getPort().getPortEn(),
                     new Gson().toJson(linerStatusDetail));
         }
         try {
-            ncmbObject.save();
+            newObj.save();
         } catch (NCMBException e) {
             Log.d("AneiRequest", "AneiDetail 保存失敗 :" + e);
         }
