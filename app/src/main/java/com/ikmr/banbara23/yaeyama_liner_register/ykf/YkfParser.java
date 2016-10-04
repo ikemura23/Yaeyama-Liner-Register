@@ -196,13 +196,13 @@ public class YkfParser {
             case KOHAMA:
                 return "#u2 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
             case KUROSHIMA:
-                return "#u3 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
-            case OOHARA:
                 return "#u4 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
-            case UEHARA:
-                return "#u5 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
-            case HATOMA:
+            case OOHARA:
                 return "#u6 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case UEHARA:
+                return "#u7 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
+            case HATOMA:
+                return "#u8 > div.unkou_item_display_in > div.unkou_item_display_txt > span";
             default:
                 return "";
         }
@@ -221,13 +221,13 @@ public class YkfParser {
             case KOHAMA:
                 return "#u2 > div.unkou_item_display_in > div.unkou_item_display_txt";
             case KUROSHIMA:
-                return "#u3 > div.unkou_item_display_in > div.unkou_item_display_txt";
-            case OOHARA:
                 return "#u4 > div.unkou_item_display_in > div.unkou_item_display_txt";
-            case UEHARA:
-                return "#u5 > div.unkou_item_display_in > div.unkou_item_display_txt";
-            case HATOMA:
+            case OOHARA:
                 return "#u6 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case UEHARA:
+                return "#u7 > div.unkou_item_display_in > div.unkou_item_display_txt";
+            case HATOMA:
+                return "#u8 > div.unkou_item_display_in > div.unkou_item_display_txt";
             default:
                 return "";
         }
@@ -246,13 +246,13 @@ public class YkfParser {
             case KOHAMA:
                 return "#u2 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
             case KUROSHIMA:
-                return "#u3 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
-            case OOHARA:
                 return "#u4 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
-            case UEHARA:
-                return "#u5 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
-            case HATOMA:
+            case OOHARA:
                 return "#u6 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case UEHARA:
+                return "#u7 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
+            case HATOMA:
+                return "#u8 > div.unkou_item_display_in > div.no_disp.unkou_item_display_bikou";
             default:
                 return "";
         }
