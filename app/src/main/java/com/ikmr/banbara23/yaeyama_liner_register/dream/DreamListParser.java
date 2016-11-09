@@ -6,6 +6,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
+import com.socks.library.KLog;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -91,14 +92,26 @@ public class DreamListParser {
                 continue;
             }
 
-            String comment;
+            String comment = "";
             if (firstDiv.children().size() > 1) {
                 liner.setStatus(parsStatus(firstDiv.child(1))); // ステータスを取得
                 comment = firstDiv.child(1).text();             // コメントを取得
+                Element secondDiv = li.child(1);
+                if (!secondDiv.text().trim().isEmpty()) {
+                    comment = comment + " " + secondDiv.text();
+                }
             } else {
-                liner.setStatus(parsStatus(li.child(1)));       // ステータスを取得
-                comment = li.child(1).text();                   // コメントを取得
+                try {
+                    liner.setStatus(parsStatus(li.child(0).child(0)));       // ステータスを取得
+                    comment = li.child(0).child(0).text().trim();   // コメントを取得
+                    if (!li.child(1).text().trim().isEmpty()) {
+                        comment = comment + " " + li.child(1).text().trim();
+                    }
+                } catch (Exception e) {
+                    KLog.e(e);
+                }
             }
+
             liner.setText(comment);
 
             // Linerに値がちゃんと入っていればforから抜ける
