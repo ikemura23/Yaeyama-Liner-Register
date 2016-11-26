@@ -6,7 +6,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
-import com.socks.library.KLog;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -108,7 +108,7 @@ public class DreamListParser {
                         comment = comment + " " + li.child(1).text().trim();
                     }
                 } catch (Exception e) {
-                    KLog.e(e);
+                    Logger.e(e.getMessage());
                 }
             }
 

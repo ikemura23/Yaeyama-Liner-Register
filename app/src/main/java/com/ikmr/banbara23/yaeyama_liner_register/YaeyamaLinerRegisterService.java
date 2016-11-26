@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
+import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamController;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -57,7 +57,8 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             @Override
             public void call(Subscriber<? super String> subscriber) {
 //                new AnneiListController().execute();
-                new YkfController().execute();
+//                new YkfController().execute();
+                new DreamController().execute();
 
                 subscriber.onNext("");
                 subscriber.onCompleted();
@@ -67,18 +68,18 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     @Override
                     public void onCompleted() {
                         // 完了
-                        Logger.d("allExecute", "onCompleted");
+                        Logger.d("onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         // 失敗
-                        Logger.d("allExecute", "Error:" + e);
+                        Logger.d("Error:" + e);
                     }
 
                     @Override
                     public void onNext(String s) {
-                        Logger.d("allExecute", "onNext");
+                        Logger.d("onNext");
                     }
                 });
     }
