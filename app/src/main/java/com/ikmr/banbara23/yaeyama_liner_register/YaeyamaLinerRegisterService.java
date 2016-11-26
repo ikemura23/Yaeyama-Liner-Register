@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiListController;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
+import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
@@ -55,7 +55,9 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                new AnneiListController().execute();
+//                new AnneiListController().execute();
+                new YkfController().execute();
+
                 subscriber.onNext("");
                 subscriber.onCompleted();
             }

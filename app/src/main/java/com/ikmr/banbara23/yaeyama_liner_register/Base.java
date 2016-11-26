@@ -29,6 +29,10 @@ public class Base {
         }
     }
 
+    public static String getString(int key) {
+        return getContext().getString(key);
+    }
+
     public static Resources getResources() {
         return Base.getContext().getResources();
     }
