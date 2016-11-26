@@ -12,6 +12,7 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 安栄一覧の取得
@@ -20,9 +21,9 @@ public class AnneiStatusListApi {
 
     /**
      * RxAndroidを利用
-     * 
-     * @return Observable<Result>
+     *
      * @param url
+     * @return Observable<Result>
      */
     public static Observable<Result> request(final String url) {
         return Observable
@@ -44,6 +45,7 @@ public class AnneiStatusListApi {
                     public Result call(Document document) {
                         return AnneiListParser.pars(document);
                     }
-                });
+                })
+                .subscribeOn(Schedulers.newThread());
     }
 }

@@ -4,18 +4,17 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiListController;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamStatusListApi;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.html.HtmlController;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
-import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
-import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
 import com.socks.library.KLog;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -40,15 +39,46 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 
         try {
             KLog.d("execTask");
-            startAnneiListQuery();
-            YkfController.start();
-            startDreamListQuery();
-            WeatherController.start();
-            HtmlController.start();
+            allExecute();
+//            startAnneiListQuery();
+//            YkfController.start();
+//            startDreamListQuery();
+//            WeatherController.start();
+//            HtmlController.start();
         } catch (Exception e) {
             KLog.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
         makeNextPlan();
+    }
+
+    private void allExecute() {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                new AnneiListController().execute();
+                subscriber.onNext("");
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        // 完了
+                        KLog.d("allExecute", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // 失敗
+                        KLog.d("allExecute", "onError");
+                        KLog.d("MainActivity", "e:" + e);
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        KLog.d("allExecute", "onNext");
+                    }
+                });
     }
 
     @Override
@@ -73,7 +103,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
     private void startAnneiListQuery() {
         AnneiStatusListApi.request(getString(R.string.url_annei_list))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Subscriber<Result>() {
                     @Override
                     public void onCompleted() {
