@@ -12,6 +12,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.orhanobut.logger.Logger;
 import com.socks.library.KLog;
 
 import rx.Observable;
@@ -38,7 +39,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         activeService = this;
 
         try {
-            KLog.d("execTask");
+            Logger.d("execTask");
             allExecute();
 //            startAnneiListQuery();
 //            YkfController.start();
@@ -46,7 +47,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
 //            WeatherController.start();
 //            HtmlController.start();
         } catch (Exception e) {
-            KLog.d("YaeyamaLinerRegisterSer", e.getMessage());
+            Logger.d("YaeyamaLinerRegisterSer", e.getMessage());
         }
         makeNextPlan();
     }
@@ -66,19 +67,18 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     @Override
                     public void onCompleted() {
                         // 完了
-                        KLog.d("allExecute", "onCompleted");
+                        Logger.d("allExecute", "onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         // 失敗
-                        KLog.d("allExecute", "onError");
-                        KLog.d("MainActivity", "e:" + e);
+                        Logger.d("allExecute", "Error:" + e);
                     }
 
                     @Override
                     public void onNext(String s) {
-                        KLog.d("allExecute", "onNext");
+                        Logger.d("allExecute", "onNext");
                     }
                 });
     }

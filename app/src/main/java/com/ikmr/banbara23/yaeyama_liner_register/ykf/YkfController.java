@@ -10,6 +10,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -80,10 +81,10 @@ public class YkfController {
         try {
             obj.save();
             PreferenceUtils.put(key, json);
-            Log.d("YkfListApiClient", "YkfList 送信成功");
-            Log.d("YkfListApiClient", "result:" + result.toString());
+            Logger.d("YkfListApiClient", "YkfList 送信成功");
+            Logger.d("YkfListApiClient", "result:" + result.toString());
         } catch (NCMBException e) {
-            Log.e("YkfListApiClient", e.getMessage());
+            Logger.e("YkfListApiClient", e.getMessage());
         }
     }
 

@@ -5,7 +5,8 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
-import com.socks.library.KLog;
+import com.ikmr.banbara23.yaeyama_liner_register.util.ParseUtil;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -51,7 +52,7 @@ public class YkfParser {
         try {
             text = document.select("#unkou_bg_top > div.unkou_hed > div").text();
         } catch (Exception ex) {
-            KLog.d(ex.getMessage());
+            Logger.d(ex.getMessage());
             text = "Error";
         }
         return text;
@@ -65,7 +66,7 @@ public class YkfParser {
         try {
             text = document.select("#unkou_bg_top > div.unkou_bikou > p").text().replace("運航状況の一覧", "");
         } catch (Exception ex) {
-            KLog.e(TAG, ex.getMessage());
+            Logger.e(TAG, ex.getMessage());
             text = "";
         }
         return text;
@@ -86,7 +87,7 @@ public class YkfParser {
         String statusText = parsStatusText(port, document);
         String statusComment = parsStatusComment(port, document);
         liner.setText(statusText + " " + statusComment);
-        KLog.d("Ykf liner", liner.toString());
+        Logger.d(liner.toString());
         return liner;
     }
 
@@ -103,7 +104,7 @@ public class YkfParser {
             String value = document.select(query).text();
             return getStatus(value);
         } catch (Exception ex) {
-            KLog.e(TAG, ex.getMessage());
+            Logger.e(TAG, ex.getMessage());
             return Status.CAUTION;
         }
     }
@@ -126,7 +127,7 @@ public class YkfParser {
             }
             return node.childNode(0).toString();
         } catch (Exception ex) {
-            KLog.e(TAG, ex.getMessage());
+            Logger.e(TAG, ex.getMessage());
         }
         return "";
     }
@@ -142,12 +143,15 @@ public class YkfParser {
         String query = getStatusCommentSelectorQuery(port);
         try {
             Elements elements = document.select(query);
+            if (ParseUtil.isEmptyElements(elements)) {
+                return "";
+            }
             Element element = elements.first();
             return element.text();
         } catch (Exception ex) {
-            KLog.e(TAG, ex.getMessage());
+            Logger.e(TAG, ex.getMessage());
+            return "";
         }
-        return "";
     }
 
     /***

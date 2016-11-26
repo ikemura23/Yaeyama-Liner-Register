@@ -10,7 +10,7 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
-import com.socks.library.KLog;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,7 +44,7 @@ public class AnneiListController {
         // 前回の値と比較
         if (isEqualForLastTimeResult(result, getString(R.string.pref_annei_result_key))) {
             // 前回の結果と同じ値ならAPI送信しない
-            KLog.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
+            Logger.d("YaeyamaLinerRegisterSer", "前回と同じ安栄一覧");
             return;
         }
 
@@ -57,7 +57,7 @@ public class AnneiListController {
             Log.d("MainActivity", "AnneiList 保存成功");
             Log.d("MainActivity", "result:" + result.toString());
         } catch (NCMBException e) {
-            KLog.d("MainActivity", "AnneiList 保存失敗 :" + e);
+            Logger.d("MainActivity", "AnneiList 保存失敗 :" + e);
         }
     }
 

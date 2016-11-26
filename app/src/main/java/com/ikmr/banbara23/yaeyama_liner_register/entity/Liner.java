@@ -71,7 +71,7 @@ public class Liner implements Parcelable {
     @Override
     public String toString() {
         return "Liner{" +
-                ", port=" + port +
+                "port=" + port +
                 ", status=" + status +
                 ", text='" + text + '\'' +
                 '}';
