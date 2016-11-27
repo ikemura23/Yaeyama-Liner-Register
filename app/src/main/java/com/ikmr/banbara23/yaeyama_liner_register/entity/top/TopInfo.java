@@ -11,6 +11,15 @@ public class TopInfo {
 
     private List<PortStatus> portStatuses;
     private List<CompanyStatus> companyStatuses;
+    CompanyStatusInfo companyStatusInfo;
+
+    public CompanyStatusInfo getCompanyStatusInfo() {
+        return companyStatusInfo;
+    }
+
+    public void setCompanyStatusInfo(CompanyStatusInfo companyStatusInfo) {
+        this.companyStatusInfo = companyStatusInfo;
+    }
 
     public List<PortStatus> getPortStatuses() {
         return portStatuses;

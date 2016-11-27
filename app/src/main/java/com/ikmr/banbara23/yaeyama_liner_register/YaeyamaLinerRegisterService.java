@@ -2,6 +2,7 @@ package com.ikmr.banbara23.yaeyama_liner_register;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiListController;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
@@ -9,10 +10,14 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.CompanyStatus;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.CompanyStatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatus;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.TopInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
 import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
+import com.nifty.cloud.mb.core.NCMBObject;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -44,9 +49,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
             Logger.d("execTask");
             WeatherController.start();
             allExecute();
-//            startAnneiListQuery();
-//            YkfController.start();
-//            startDreamListQuery();
 //            HtmlController.start();
         } catch (Exception e) {
             Logger.d("YaeyamaLinerRegisterSer", e.getMessage());
@@ -63,6 +65,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                 Result dreamResult = new DreamController().getResult();
 
                 TopInfo topInfo = createTopInfo(aneiResult, ykfResult, dreamResult);
+                sendTopInfo(topInfo);
 
                 subscriber.onNext("");
                 subscriber.onCompleted();
@@ -89,6 +92,14 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                 });
     }
 
+    private void sendTopInfo(TopInfo topInfo) {
+        NCMBObject obj = new NCMBObject("top_info");
+        obj.put("port_anei_status", topInfo.getCompanyStatuses());
+
+        String json = new Gson().toJson(topInfo);
+        PreferenceUtils.put(TopInfo.class.getCanonicalName(), json);
+    }
+
     /**
      * 3会社の値からトップ情報を作成する
      *
@@ -100,7 +111,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
     private TopInfo createTopInfo(Result aneiResult, Result ykfResult, Result dreamResult) {
         TopInfo topInfo = new TopInfo();
 
-        topInfo.setCompanyStatuses(createCompanyStatuses(aneiResult, ykfResult, dreamResult));
+        topInfo.setCompanyStatusInfo(createCompanyStatuses(aneiResult, ykfResult, dreamResult));
         topInfo.setPortStatuses(createPortStatuses(aneiResult, ykfResult, dreamResult));
 
         return topInfo;
@@ -114,17 +125,17 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
      * @param dreamResult ドリーム
      * @return 会社別簡易運航情報
      */
-    private List<CompanyStatus> createCompanyStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
-        List<CompanyStatus> companyStatuses = new ArrayList<>();
+    private CompanyStatusInfo createCompanyStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
+        CompanyStatusInfo companyStatusInfo = new CompanyStatusInfo();
 
         // 安栄
-        companyStatuses.add(createCompanyStatus(aneiResult));
+        companyStatusInfo.setAneiStatus(createCompanyStatus(aneiResult));
         // Ykf
-        companyStatuses.add(createCompanyStatus(ykfResult));
+        companyStatusInfo.setYkfStatus(createCompanyStatus(ykfResult));
         // ドリーム
-        companyStatuses.add(createCompanyStatus(dreamResult));
+        companyStatusInfo.setDreamStatus(createCompanyStatus(dreamResult));
 
-        return companyStatuses;
+        return companyStatusInfo;
     }
 
     private CompanyStatus createCompanyStatus(Result result) {
@@ -156,6 +167,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
      */
     private List<PortStatus> createPortStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
         List<PortStatus> portStatuses = new ArrayList<>();
+        PortStatusInfo portStatusInfo = new PortStatusInfo();
 
         portStatuses.add(createPortStatus(Port.TAKETOMI, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
         portStatuses.add(createPortStatus(Port.KOHAMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
