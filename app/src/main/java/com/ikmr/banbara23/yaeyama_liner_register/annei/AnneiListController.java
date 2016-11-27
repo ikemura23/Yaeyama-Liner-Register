@@ -20,11 +20,11 @@ import java.io.IOException;
 public class AnneiListController {
 
     public void execute() {
-        Result result = getAnneiListResult();
+        Result result = getListResult();
         sendAnneiListResult(result);
     }
 
-    private Result getAnneiListResult() {
+    private Result getListResult() {
         String url = getString(R.string.url_annei_list);
         try {
             Document document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();

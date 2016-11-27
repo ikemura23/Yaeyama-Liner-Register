@@ -4,6 +4,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.annei;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
@@ -26,6 +27,7 @@ public class AnneiListParser {
             return null;
         }
         Result result = new Result();
+        result.setCompany(Company.ANNEI);
         ArrayList<Liner> mLiners = new ArrayList<>();
 
         // 更新日-------------------------------
@@ -86,9 +88,9 @@ public class AnneiListParser {
 
     /**
      * 波照間
-     * 
+     *
      * @param port 港名
-     * @param li <div class="box">
+     * @param li   <div class="box">
      * @return
      */
     private static Liner getPort(Port port, Elements li) {
