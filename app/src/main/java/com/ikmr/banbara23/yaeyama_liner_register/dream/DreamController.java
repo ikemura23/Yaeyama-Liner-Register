@@ -18,9 +18,10 @@ import static com.ikmr.banbara23.yaeyama_liner_register.Base.getString;
 
 public class DreamController {
 
-    public void execute() {
+    public Result getResult() {
         Result result = getListResult();
         send(result);
+        return result;
     }
 
     private Result getListResult() {

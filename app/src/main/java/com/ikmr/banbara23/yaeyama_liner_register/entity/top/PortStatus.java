@@ -4,8 +4,8 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 
-public class PortStatuses {
-    public PortStatuses() {
+public class PortStatus {
+    public PortStatus() {
     }
 
     private Port port;
@@ -25,5 +25,13 @@ public class PortStatuses {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "PortStatus{" +
+                "port=" + port +
+                ", status=" + status +
+                '}';
     }
 }

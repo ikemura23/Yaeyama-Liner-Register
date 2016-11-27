@@ -3,8 +3,8 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 
-public class CompanyStatuses {
-    public CompanyStatuses() {
+public class CompanyStatus {
+    public CompanyStatus() {
     }
 
     private Company company;
@@ -24,5 +24,13 @@ public class CompanyStatuses {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "CompanyStatus{" +
+                "company=" + company +
+                ", status=" + status +
+                '}';
     }
 }

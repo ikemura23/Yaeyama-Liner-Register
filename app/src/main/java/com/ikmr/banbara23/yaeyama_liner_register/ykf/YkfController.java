@@ -20,9 +20,10 @@ import java.io.IOException;
  */
 public class YkfController {
 
-    public void execute() {
+    public Result getResult() {
         Result result = getListResult();
         sendResult(result);
+        return result;
     }
 
     private Result getListResult() {

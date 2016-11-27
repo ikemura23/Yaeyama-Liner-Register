@@ -19,9 +19,10 @@ import java.io.IOException;
 
 public class AnneiListController {
 
-    public void execute() {
+    public Result getResult() {
         Result result = getListResult();
         sendAnneiListResult(result);
+        return result;
     }
 
     private Result getListResult() {

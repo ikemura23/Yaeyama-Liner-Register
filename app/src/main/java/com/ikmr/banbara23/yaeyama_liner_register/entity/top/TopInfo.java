@@ -1,5 +1,7 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 
+import java.util.List;
+
 /**
  * トップ画面に使う情報
  */
@@ -7,22 +9,30 @@ public class TopInfo {
     public TopInfo() {
     }
 
-    private PortStatuses portStatuses;
-    private CompanyStatuses companyStatuses;
+    private List<PortStatus> portStatuses;
+    private List<CompanyStatus> companyStatuses;
 
-    public PortStatuses getPortStatuses() {
+    public List<PortStatus> getPortStatuses() {
         return portStatuses;
     }
 
-    public void setPortStatuses(PortStatuses portStatuses) {
+    public void setPortStatuses(List<PortStatus> portStatuses) {
         this.portStatuses = portStatuses;
     }
 
-    public CompanyStatuses getCompanyStatuses() {
+    public List<CompanyStatus> getCompanyStatuses() {
         return companyStatuses;
     }
 
-    public void setCompanyStatuses(CompanyStatuses companyStatuses) {
+    public void setCompanyStatuses(List<CompanyStatus> companyStatuses) {
         this.companyStatuses = companyStatuses;
+    }
+
+    @Override
+    public String toString() {
+        return "TopInfo{" +
+                "portStatuses=" + portStatuses +
+                ", companyStatuses=" + companyStatuses +
+                '}';
     }
 }
