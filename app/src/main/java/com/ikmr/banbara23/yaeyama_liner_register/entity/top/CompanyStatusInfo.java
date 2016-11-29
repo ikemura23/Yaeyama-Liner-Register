@@ -3,9 +3,10 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 public class CompanyStatusInfo {
     public CompanyStatusInfo() {
     }
-    CompanyStatus aneiStatus;
-    CompanyStatus ykfStatus;
-    CompanyStatus dreamStatus;
+
+    private CompanyStatus aneiStatus;
+    private CompanyStatus ykfStatus;
+    private CompanyStatus dreamStatus;
 
     public CompanyStatus getAneiStatus() {
         return aneiStatus;
@@ -29,5 +30,14 @@ public class CompanyStatusInfo {
 
     public void setDreamStatus(CompanyStatus dreamStatus) {
         this.dreamStatus = dreamStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "CompanyStatusInfo{" +
+                "aneiStatus=" + aneiStatus +
+                ", ykfStatus=" + ykfStatus +
+                ", dreamStatus=" + dreamStatus +
+                '}';
     }
 }

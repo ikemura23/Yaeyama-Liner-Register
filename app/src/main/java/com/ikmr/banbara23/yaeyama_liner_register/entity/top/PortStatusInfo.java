@@ -3,13 +3,13 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 
 public class PortStatusInfo {
 
-    PortStatus taketomiStatus;
-    PortStatus kohamaStatus;
-    PortStatus kuroshimaStatus;
-    PortStatus ueharaStatus;
-    PortStatus ooharaStatus;
-    PortStatus hatomaStatus;
-    PortStatus haterumaStatus;
+    private PortStatus taketomiStatus;
+    private PortStatus kohamaStatus;
+    private PortStatus kuroshimaStatus;
+    private PortStatus ueharaStatus;
+    private PortStatus ooharaStatus;
+    private PortStatus hatomaStatus;
+    private PortStatus haterumaStatus;
 
     public PortStatus getTaketomiStatus() {
         return taketomiStatus;
@@ -65,5 +65,18 @@ public class PortStatusInfo {
 
     public void setHaterumaStatus(PortStatus haterumaStatus) {
         this.haterumaStatus = haterumaStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "PortStatusInfo{" +
+                "taketomiStatus=" + taketomiStatus +
+                ", kohamaStatus=" + kohamaStatus +
+                ", kuroshimaStatus=" + kuroshimaStatus +
+                ", ueharaStatus=" + ueharaStatus +
+                ", ooharaStatus=" + ooharaStatus +
+                ", hatomaStatus=" + hatomaStatus +
+                ", haterumaStatus=" + haterumaStatus +
+                '}';
     }
 }

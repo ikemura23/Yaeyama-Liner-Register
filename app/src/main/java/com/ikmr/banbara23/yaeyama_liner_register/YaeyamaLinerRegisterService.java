@@ -14,13 +14,14 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.top.CompanyStatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatusInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.TopInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
 import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
+import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
 import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -67,7 +68,6 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                 TopInfo topInfo = createTopInfo(aneiResult, ykfResult, dreamResult);
                 sendTopInfo(topInfo);
 
-                subscriber.onNext("");
                 subscriber.onCompleted();
             }
 
@@ -93,10 +93,41 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
     }
 
     private void sendTopInfo(TopInfo topInfo) {
-        NCMBObject obj = new NCMBObject("top_info");
-        obj.put("port_anei_status", topInfo.getCompanyStatuses());
-
         String json = new Gson().toJson(topInfo);
+        if (CashUtil.isEqualForLastTime(json, TopInfo.class.getCanonicalName())) {
+            // 前回と同じ値
+            return;
+        }
+        NCMBObject obj = new NCMBObject("TopInfo");
+        // 安栄
+        obj.put("company_anei_status_type", topInfo.getCompanyStatusInfo().getAneiStatus().getStatus().getType());
+        // YKF
+        obj.put("company_ykf_status_type", topInfo.getCompanyStatusInfo().getYkfStatus().getStatus().getType());
+        // ドリーム
+        obj.put("company_dream_status_type", topInfo.getCompanyStatusInfo().getDreamStatus().getStatus().getType());
+
+        // 竹富
+        obj.put("port_taketomi_status_type", topInfo.getPortStatusInfo().getTaketomiStatus().getStatus().getType());
+        // 小浜
+        obj.put("port_kohama_status_type", topInfo.getPortStatusInfo().getKohamaStatus().getStatus().getType());
+        // 黒島
+        obj.put("port_kuroshima_status_type", topInfo.getPortStatusInfo().getKuroshimaStatus().getStatus().getType());
+        // 上原
+        obj.put("port_uehara_status_type", topInfo.getPortStatusInfo().getUeharaStatus().getStatus().getType());
+        // 大原
+        obj.put("port_oohara_status_type", topInfo.getPortStatusInfo().getOoharaStatus().getStatus().getType());
+        // 鳩間
+        obj.put("port_hatoma_status_type", topInfo.getPortStatusInfo().getHatomaStatus().getStatus().getType());
+        // 波照間
+        obj.put("port_hateruma_status_type", topInfo.getPortStatusInfo().getHaterumaStatus().getStatus().getType());
+
+        try {
+            obj.save();
+            Logger.d("topInfo送信成功");
+            Logger.json(json);
+        } catch (NCMBException e) {
+            Logger.e(e.getMessage());
+        }
         PreferenceUtils.put(TopInfo.class.getCanonicalName(), json);
     }
 
@@ -112,7 +143,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
         TopInfo topInfo = new TopInfo();
 
         topInfo.setCompanyStatusInfo(createCompanyStatuses(aneiResult, ykfResult, dreamResult));
-        topInfo.setPortStatuses(createPortStatuses(aneiResult, ykfResult, dreamResult));
+        topInfo.setPortStatusInfo(createPortStatuses(aneiResult, ykfResult, dreamResult));
 
         return topInfo;
     }
@@ -165,19 +196,18 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
      * @param dreamResult
      * @return
      */
-    private List<PortStatus> createPortStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
-        List<PortStatus> portStatuses = new ArrayList<>();
+    private PortStatusInfo createPortStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
         PortStatusInfo portStatusInfo = new PortStatusInfo();
 
-        portStatuses.add(createPortStatus(Port.TAKETOMI, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.KOHAMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.KUROSHIMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.UEHARA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.OOHARA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.HATOMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
-        portStatuses.add(createPortStatus(Port.HATERUMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setTaketomiStatus(createPortStatus(Port.TAKETOMI, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setKohamaStatus(createPortStatus(Port.KOHAMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setKuroshimaStatus(createPortStatus(Port.KUROSHIMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setUeharaStatus(createPortStatus(Port.UEHARA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setOoharaStatus(createPortStatus(Port.OOHARA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setHatomaStatus(createPortStatus(Port.HATOMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
+        portStatusInfo.setHaterumaStatus(createPortStatus(Port.HATERUMA, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
 
-        return portStatuses;
+        return portStatusInfo;
     }
 
     /**

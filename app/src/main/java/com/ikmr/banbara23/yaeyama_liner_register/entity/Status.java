@@ -10,35 +10,35 @@ public enum Status {
     CAUTION("other", "注意"),
     SUSPEND("suspend", "運休");
 
-    String status;
-    String statusName;
+    String type;
+    String value;
 
-    Status(String status, String statusName) {
-        this.status = status;
-        this.statusName = statusName;
+    Status(String type, String value) {
+        this.type = type;
+        this.value = value;
     }
 
-    public String getStatus() {
-        return status;
+    public String getType() {
+        return type;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getStatusName() {
-        return statusName;
+    public String getValue() {
+        return value;
     }
 
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
         return "Status{" +
-                "status='" + status + '\'' +
-                ", statusName='" + statusName + '\'' +
+                "type='" + type + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

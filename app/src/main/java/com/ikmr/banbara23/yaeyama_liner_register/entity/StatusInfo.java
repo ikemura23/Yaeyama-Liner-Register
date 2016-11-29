@@ -26,7 +26,7 @@ public class StatusInfo {
     @Override
     public String toString() {
         return "StatusInfo{" +
-                "status=" + status +
+                "type=" + status +
                 ", statusText='" + statusText + '\'' +
                 '}';
     }
