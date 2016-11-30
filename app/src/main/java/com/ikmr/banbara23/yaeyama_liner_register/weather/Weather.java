@@ -14,8 +14,6 @@ public class Weather {
     String wind;
     // 波
     String wave;
-    // リンクurl
-    String url = "http://weather.yahoo.co.jp/weather/jp/47/9410.html";
 
     public void setDate(String date) {
         this.date = date;

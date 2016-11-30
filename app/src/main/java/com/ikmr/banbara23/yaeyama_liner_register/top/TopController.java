@@ -18,14 +18,14 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-public class TopInfoController {
-    public TopInfoController() {
+public class TopController {
+    public TopController() {
     }
 
     /**
      * トップ情報の処理実行
      *
-     * @param aneiResult  あんえい
+     * @param aneiResult  安栄
      * @param ykfResult   YKF
      * @param dreamResult ドリーム
      */
@@ -98,10 +98,10 @@ public class TopInfoController {
     /**
      * 港別の運航情報を作成
      *
-     * @param aneiResult
-     * @param ykfResult
-     * @param dreamResult
-     * @return
+     * @param aneiResult  安栄
+     * @param ykfResult   YKF
+     * @param dreamResult ドリーム
+     * @return 港別の運航情報
      */
     private PortStatusInfo createPortStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
         PortStatusInfo portStatusInfo = new PortStatusInfo();
@@ -120,10 +120,10 @@ public class TopInfoController {
     /**
      * 指定した港の運航情報を取得
      *
-     * @param targetPort
-     * @param aneiLiners
-     * @param ykfLiners
-     * @param dreamLiners
+     * @param targetPort  欲しい港
+     * @param aneiLiners  安栄
+     * @param ykfLiners   YKF
+     * @param dreamLiners ドリーム
      * @return
      */
     private PortStatus createPortStatus(Port targetPort, List<Liner> aneiLiners, List<Liner> ykfLiners, List<Liner> dreamLiners) {
@@ -147,8 +147,8 @@ public class TopInfoController {
     /**
      * 引数の会社配列から指定した港の運航情報を取得
      *
-     * @param targetPort
-     * @param liners
+     * @param targetPort 対象港
+     * @param liners     運航情報
      * @return 運航情報
      */
     private Status getTargetPortStatus(Port targetPort, List<Liner> liners) {
@@ -163,7 +163,7 @@ public class TopInfoController {
     /**
      * トップ情報の送信
      *
-     * @param topInfo 　トップ情報
+     * @param topInfo トップ情報
      */
     private void sendTopInfo(TopInfo topInfo) {
         String json = new Gson().toJson(topInfo);
