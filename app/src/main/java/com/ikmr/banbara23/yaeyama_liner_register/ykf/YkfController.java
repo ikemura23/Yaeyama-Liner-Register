@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -32,6 +33,7 @@ public class YkfController {
             Document document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
             return YkfParser.pars(document);
         } catch (IOException e) {
+            SlackController.post("Ykf一覧 パース 失敗 : " + e.getMessage());
             return null;
         }
     }
@@ -51,7 +53,9 @@ public class YkfController {
             PreferenceUtils.put(key, json);
             Logger.d("YkfListApiClient", "YkfList 送信成功");
             Logger.d("YkfListApiClient", "result:" + result.toString());
+            SlackController.post("Ykf一覧 登録 成功");
         } catch (NCMBException e) {
+            SlackController.post("Ykf一覧 登録 失敗 : " + e);
             Logger.e("YkfListApiClient", e.getMessage());
         }
     }

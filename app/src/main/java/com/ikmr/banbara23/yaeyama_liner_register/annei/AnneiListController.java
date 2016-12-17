@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -31,6 +32,8 @@ public class AnneiListController {
             Document document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
             return AnneiListParser.pars(document);
         } catch (IOException e) {
+            SlackController.post("安栄一覧 パース 失敗 : " + e.getMessage());
+            Logger.e(e.getMessage());
             return null;
         }
 
@@ -57,7 +60,9 @@ public class AnneiListController {
             saveResultToPref(result, getString(R.string.pref_annei_result_key));
             Log.d("MainActivity", "AnneiList 保存成功");
             Log.d("MainActivity", "result:" + result.toString());
+            SlackController.post("安栄一覧 登録 成功");
         } catch (NCMBException e) {
+            SlackController.post("安栄一覧 登録 失敗 : " + e);
             Logger.d("MainActivity", "AnneiList 保存失敗 :" + e);
         }
     }

@@ -66,6 +66,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                     public void onError(Throwable e) {
                         // 失敗
                         Logger.d("allExecute Error:" + e);
+                        SlackController.post("allExecute Error:" + e);
                     }
 
                     @Override

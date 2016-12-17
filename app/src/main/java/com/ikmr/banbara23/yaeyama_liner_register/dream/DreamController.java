@@ -3,6 +3,7 @@ package com.ikmr.banbara23.yaeyama_liner_register.dream;
 import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -30,6 +31,7 @@ public class DreamController {
             Document document = Jsoup.connect(url).timeout(Const.CONNECTION_TIME_OUT).get();
             return DreamListParser.pars(document);
         } catch (IOException e) {
+            SlackController.post("ドリーム一覧 パース 失敗 : " + e.getMessage());
             Logger.e(e.getMessage());
             return null;
         }
@@ -48,7 +50,9 @@ public class DreamController {
             saveResultToPref(result, getString(R.string.pref_dream_result_key));
             Logger.d("DreamList 保存成功");
             Logger.d("result:" + result.toString());
+            SlackController.post("ドリーム一覧 登録 成功");
         } catch (NCMBException e) {
+            SlackController.post("ドリーム一覧 登録 失敗 : " + e);
             Logger.d("DreamList 保存失敗 :" + e);
         }
     }
