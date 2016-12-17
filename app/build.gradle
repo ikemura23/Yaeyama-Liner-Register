@@ -15,10 +15,12 @@ android {
         debug {
             buildConfigField "String", "NCMB_APPLICATION_ID", "\"${project.property("NcmbApplicationKeyDebug")}\""
             buildConfigField "String", "NCMB_CLIENT_KEY", "\"${project.property("NcmbClientKeydebug")}\""
+            buildConfigField "String", "SLACK_TOKEN", "\"${project.property("SlackToken")}\""
         }
         release {
             buildConfigField "String", "NCMB_APPLICATION_ID", "\"${project.property("NcmbApplicationKeyRelease")}\""
             buildConfigField "String", "NCMB_CLIENT_KEY", "\"${project.property("NcmbClientKeyRelease")}\""
+            buildConfigField "String", "SLACK_TOKEN", "\"${project.property("SlackToken")}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

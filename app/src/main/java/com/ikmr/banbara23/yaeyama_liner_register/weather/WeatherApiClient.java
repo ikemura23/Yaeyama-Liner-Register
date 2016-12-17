@@ -7,10 +7,12 @@ import com.google.gson.Gson;
 import com.ikmr.banbara23.yaeyama_liner_register.Base;
 import com.ikmr.banbara23.yaeyama_liner_register.Const;
 import com.ikmr.banbara23.yaeyama_liner_register.R;
+import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +31,7 @@ public class WeatherApiClient {
 
     /**
      * 天気取得
-     * 
+     *
      * @return Observable<Result>
      */
     public static Observable<Weather> request() {
@@ -80,11 +82,12 @@ public class WeatherApiClient {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
-                    // 保存成功
-                    Log.d("WeatherController", "json 送信成功");
+                    // 送信成功
+                    Logger.d("WeatherController", "json 送信成功");
                     PreferenceUtils.put(key, weatherJson);
+                    SlackController.post("天気 json 送信成功");
                 } else {
-                    // 保存失敗
+                    // 送信失敗
                     Log.d("WeatherController", "json 送信失敗 :" + e);
                 }
             }
@@ -96,7 +99,7 @@ public class WeatherApiClient {
      * 前回のキャッシュと値を比較
      *
      * @param json 今回取得した値
-     * @param key 前回値が保存されているキー
+     * @param key  前回値が保存されているキー
      * @return true:値が同じ false:違う
      */
     private static boolean isEqualForLastTime(String json, String key) {
