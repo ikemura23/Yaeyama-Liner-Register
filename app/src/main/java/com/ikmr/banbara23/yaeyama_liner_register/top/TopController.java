@@ -1,6 +1,7 @@
 package com.ikmr.banbara23.yaeyama_liner_register.top;
 
 import com.google.gson.Gson;
+import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
@@ -34,6 +35,7 @@ public class TopController {
             TopInfo topInfo = createTopInfo(aneiResult, ykfResult, dreamResult);
             sendTopInfo(topInfo);
         } catch (Exception e) {
+            SlackController.post("トップ情報の処理 失敗" + e.getMessage());
             Logger.e(e.getMessage());
         }
     }
@@ -77,6 +79,7 @@ public class TopController {
     }
 
     private CompanyStatus createCompanyStatus(Result result) {
+        if (result == null) return null;
         CompanyStatus companyStatus = new CompanyStatus();
         companyStatus.setCompany(result.getCompany());
         companyStatus.setStatus(getStatus(result.getLiners()));
@@ -152,6 +155,7 @@ public class TopController {
      * @return 運航情報
      */
     private Status getTargetPortStatus(Port targetPort, List<Liner> liners) {
+        if (liners == null || liners.isEmpty()) return null;
         for (Liner liner : liners) {
             if (liner.getPort() == targetPort) {
                 return liner.getStatus();
@@ -198,7 +202,9 @@ public class TopController {
             obj.save();
             Logger.d("topInfo送信成功");
             Logger.json(json);
+            SlackController.post("トップ 会社別運航 送信 成功");
         } catch (NCMBException e) {
+            SlackController.post("トップ 会社別運航 送信 失敗 : " + e.getMessage());
             Logger.e(e.getMessage());
         }
         PreferenceUtils.put(TopInfo.class.getCanonicalName(), json);

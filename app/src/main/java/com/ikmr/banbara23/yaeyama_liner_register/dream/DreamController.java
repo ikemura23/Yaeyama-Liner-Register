@@ -21,6 +21,7 @@ public class DreamController {
 
     public Result getResult() {
         Result result = getListResult();
+        if (result == null) return null;
         send(result);
         return result;
     }
