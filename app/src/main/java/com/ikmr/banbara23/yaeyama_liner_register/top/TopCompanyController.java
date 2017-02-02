@@ -19,8 +19,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
-public class TopController {
-    public TopController() {
+public class TopCompanyController {
+    public TopCompanyController() {
     }
 
     /**
