@@ -1,4 +1,4 @@
-package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
+package com.ikmr.banbara23.yaeyama_liner_register.entity.top.company;
 
 public class CompanyStatusInfo {
     public CompanyStatusInfo() {

@@ -1,12 +1,19 @@
 package com.ikmr.banbara23.yaeyama_liner_register.top;
 
 import com.ikmr.banbara23.yaeyama_liner_register.SlackController;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatus;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.PortStatusInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatus;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatusInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.TopPort;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.TopPortInfo;
 import com.orhanobut.logger.Logger;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * トップの港別運航情報を作成
@@ -58,7 +65,7 @@ public class TopPortController {
         PortStatusInfo portStatusInfo = new PortStatusInfo();
 
         //竹富島
-        portStatusInfo.setTaketomiStatus(getPortStatus(Port.TAKETOMI, aneiResult, ykfResult, dreamResult));
+        portStatusInfo.setTaketomiStatus(makePortStatus(Port.TAKETOMI, aneiResult, ykfResult, dreamResult));
         return null;
     }
 
@@ -71,18 +78,34 @@ public class TopPortController {
      * @param dreamResult ドリームの運航情報
      * @return
      */
-    private PortStatus getPortStatus(Port port, Result aneiResult, Result ykfResult, Result dreamResult) {
+    private PortStatus makePortStatus(Port port, Result aneiResult, Result ykfResult, Result dreamResult) {
 
-        PortStatus portStatus = null;
+        TopPort aneiPort = getTopPortStatus(Company.ANNEI, port, aneiResult.getLiners());
+        TopPort ykfPort = getTopPortStatus(Company.YKF, port, ykfResult.getLiners());
+        TopPort dreamPort = getTopPortStatus(Company.DREAM, port, dreamResult.getLiners());
+        PortStatus portStatus = new PortStatus();
+        return null;
+    }
 
-        for (Liner liner : aneiResult.getLiners()) {
+    /**
+     * 引数の港の運航情報を３社から取得する
+     *
+     * @param company
+     * @param port
+     * @param liners
+     * @return
+     */
+    private TopPort getTopPortStatus(Company company, Port port, List<Liner> liners) {
+        TopPort topPort = new TopPort();
+        topPort.setPort(port);
+        for (Liner liner : liners) {
             if (port == liner.getPort()) {
-                portStatus = new PortStatus();
-                portStatus.setPort(port);
-                portStatus.setStatus(liner.status);
-                return portStatus;
+                HashMap<Company, Status> status = new HashMap<>();
+                status.put(company, liner.getStatus());
+                topPort.setStatus(status);
+                break;
             }
         }
-        return portStatus;
+        return topPort;
     }
 }

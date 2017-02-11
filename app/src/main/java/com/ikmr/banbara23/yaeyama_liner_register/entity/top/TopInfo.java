@@ -1,5 +1,8 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity.top;
 
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.company.CompanyStatusInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatusInfo;
+
 /**
  * トップ画面に使う情報
  */
