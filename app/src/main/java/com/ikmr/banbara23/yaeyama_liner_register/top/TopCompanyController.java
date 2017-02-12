@@ -6,11 +6,11 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.TopInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.company.CompanyStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.company.CompanyStatusInfo;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatusInfo;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.TopInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatuses;
 import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -51,7 +51,7 @@ public class TopCompanyController {
     private TopInfo createTopInfo(Result aneiResult, Result ykfResult, Result dreamResult) {
         TopInfo topInfo = new TopInfo();
 
-        topInfo.setCompanyStatusInfo(createCompanyStatuses(aneiResult, ykfResult, dreamResult));
+//        topInfo.setCompanyStatusInfo(createCompanyStatuses(aneiResult, ykfResult, dreamResult));
         topInfo.setPortStatusInfo(createPortStatuses(aneiResult, ykfResult, dreamResult));
 
         return topInfo;
@@ -108,6 +108,7 @@ public class TopCompanyController {
      * @return 港別の運航情報
      */
     private PortStatusInfo createPortStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
+        new TopPortController(aneiResult, ykfResult, dreamResult).execute();
         PortStatusInfo portStatusInfo = new PortStatusInfo();
 
         portStatusInfo.setTaketomiStatus(createPortStatus(Port.TAKETOMI, aneiResult.getLiners(), ykfResult.getLiners(), dreamResult.getLiners()));
@@ -130,22 +131,22 @@ public class TopCompanyController {
      * @param dreamLiners ドリーム
      * @return
      */
-    private PortStatus createPortStatus(Port targetPort, List<Liner> aneiLiners, List<Liner> ykfLiners, List<Liner> dreamLiners) {
-        PortStatus portStatus = new PortStatus();
-        portStatus.setPort(targetPort);
+    private PortStatuses createPortStatus(Port targetPort, List<Liner> aneiLiners, List<Liner> ykfLiners, List<Liner> dreamLiners) {
+        PortStatuses portStatuses = new PortStatuses();
+        portStatuses.setPort(targetPort);
 
         Status anneiStatus = getTargetPortStatus(targetPort, aneiLiners);
         Status ykfStatus = getTargetPortStatus(targetPort, ykfLiners);
         Status dreamStatus = getTargetPortStatus(targetPort, dreamLiners);
 
         if (anneiStatus == Status.CANCEL || ykfStatus == Status.CANCEL || dreamStatus == Status.CANCEL) {
-            portStatus.setStatus(Status.CANCEL);
+            portStatuses.setStatus(Status.CANCEL);
         } else if (anneiStatus == Status.CAUTION || ykfStatus == Status.CAUTION || dreamStatus == Status.CAUTION) {
-            portStatus.setStatus(Status.CAUTION);
+            portStatuses.setStatus(Status.CAUTION);
         } else {
-            portStatus.setStatus(Status.NORMAL);
+            portStatuses.setStatus(Status.NORMAL);
         }
-        return portStatus;
+        return portStatuses;
     }
 
     /**
