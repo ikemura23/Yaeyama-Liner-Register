@@ -5,7 +5,7 @@ import android.content.Context;
 import com.ikmr.banbara23.yaeyama_liner_register.annei.AnneiListController;
 import com.ikmr.banbara23.yaeyama_liner_register.dream.DreamController;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
-import com.ikmr.banbara23.yaeyama_liner_register.top.TopCompanyController;
+import com.ikmr.banbara23.yaeyama_liner_register.top.TopInfoController;
 import com.ikmr.banbara23.yaeyama_liner_register.weather.WeatherController;
 import com.ikmr.banbara23.yaeyama_liner_register.ykf.YkfController;
 import com.orhanobut.logger.Logger;
@@ -49,7 +49,7 @@ public class YaeyamaLinerRegisterService extends BasePeriodicService {
                 Result ykfResult = new YkfController().getResult();
                 Result dreamResult = new DreamController().getResult();
 
-                new TopCompanyController().execute(aneiResult, ykfResult, dreamResult);
+                new TopInfoController().execute(aneiResult, ykfResult, dreamResult);
 
                 subscriber.onCompleted();
             }
