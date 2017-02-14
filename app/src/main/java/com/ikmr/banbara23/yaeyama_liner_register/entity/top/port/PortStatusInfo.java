@@ -1,69 +1,71 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity.top.port;
 
-
+/**
+ * トップの港別運航情報
+ */
 public class PortStatusInfo {
 
-    private PortStatuses taketomiStatus;
-    private PortStatuses kohamaStatus;
-    private PortStatuses kuroshimaStatus;
-    private PortStatuses ueharaStatus;
-    private PortStatuses ooharaStatus;
-    private PortStatuses hatomaStatus;
-    private PortStatuses haterumaStatus;
+    private PortStatus taketomiStatus;
+    private PortStatus kohamaStatus;
+    private PortStatus kuroshimaStatus;
+    private PortStatus ueharaStatus;
+    private PortStatus ooharaStatus;
+    private PortStatus hatomaStatus;
+    private PortStatus haterumaStatus;
 
-    public PortStatuses getTaketomiStatus() {
+    public PortStatus getTaketomiStatus() {
         return taketomiStatus;
     }
 
-    public void setTaketomiStatus(PortStatuses taketomiStatus) {
+    public void setTaketomiStatus(PortStatus taketomiStatus) {
         this.taketomiStatus = taketomiStatus;
     }
 
-    public PortStatuses getKohamaStatus() {
+    public PortStatus getKohamaStatus() {
         return kohamaStatus;
     }
 
-    public void setKohamaStatus(PortStatuses kohamaStatus) {
+    public void setKohamaStatus(PortStatus kohamaStatus) {
         this.kohamaStatus = kohamaStatus;
     }
 
-    public PortStatuses getKuroshimaStatus() {
+    public PortStatus getKuroshimaStatus() {
         return kuroshimaStatus;
     }
 
-    public void setKuroshimaStatus(PortStatuses kuroshimaStatus) {
+    public void setKuroshimaStatus(PortStatus kuroshimaStatus) {
         this.kuroshimaStatus = kuroshimaStatus;
     }
 
-    public PortStatuses getUeharaStatus() {
+    public PortStatus getUeharaStatus() {
         return ueharaStatus;
     }
 
-    public void setUeharaStatus(PortStatuses ueharaStatus) {
+    public void setUeharaStatus(PortStatus ueharaStatus) {
         this.ueharaStatus = ueharaStatus;
     }
 
-    public PortStatuses getOoharaStatus() {
+    public PortStatus getOoharaStatus() {
         return ooharaStatus;
     }
 
-    public void setOoharaStatus(PortStatuses ooharaStatus) {
+    public void setOoharaStatus(PortStatus ooharaStatus) {
         this.ooharaStatus = ooharaStatus;
     }
 
-    public PortStatuses getHatomaStatus() {
+    public PortStatus getHatomaStatus() {
         return hatomaStatus;
     }
 
-    public void setHatomaStatus(PortStatuses hatomaStatus) {
+    public void setHatomaStatus(PortStatus hatomaStatus) {
         this.hatomaStatus = hatomaStatus;
     }
 
-    public PortStatuses getHaterumaStatus() {
+    public PortStatus getHaterumaStatus() {
         return haterumaStatus;
     }
 
-    public void setHaterumaStatus(PortStatuses haterumaStatus) {
+    public void setHaterumaStatus(PortStatus haterumaStatus) {
         this.haterumaStatus = haterumaStatus;
     }
 

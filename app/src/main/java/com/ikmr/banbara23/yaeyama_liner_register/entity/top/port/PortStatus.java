@@ -4,16 +4,14 @@ package com.ikmr.banbara23.yaeyama_liner_register.entity.top.port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.Status;
 
 import java.util.HashMap;
 
-public class PortStatuses {
-    public PortStatuses() {
+public class PortStatus {
+    public PortStatus() {
     }
 
     private Port port;
-    private Status status;
     private HashMap<Company, Liner> portStatus;
 
     public Port getPort() {
@@ -22,14 +20,6 @@ public class PortStatuses {
 
     public void setPort(Port port) {
         this.port = port;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public HashMap<Company, Liner> getPortStatus() {
@@ -42,9 +32,8 @@ public class PortStatuses {
 
     @Override
     public String toString() {
-        return "PortStatuses{" +
+        return "PortStatus{" +
                 "port=" + port +
-                ", status=" + status +
                 ", portStatus=" + portStatus +
                 '}';
     }

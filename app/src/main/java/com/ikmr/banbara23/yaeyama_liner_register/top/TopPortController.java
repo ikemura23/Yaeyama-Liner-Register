@@ -4,8 +4,8 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Company;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Port;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatusInfo;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatuses;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,20 +31,6 @@ public class TopPortController {
         this.ykfResult = ykfResult;
         this.dreamResult = dreamResult;
     }
-
-//    /**
-//     * 実行呼び出し
-//     */
-//    public void execute() {
-//        try {
-//            PortStatusInfo portStatusInfo = createTopPortInfo(aneiResult, ykfResult, dreamResult);
-//            sendTopInfo(portStatusInfo);
-//        } catch (Exception e) {
-//            SlackController.post("トップ情報の処理 失敗" + e.getMessage());
-//            Logger.e(e.getMessage());
-//        }
-//
-//    }
 
     /**
      * 港別に運航情報を作成
@@ -74,9 +60,9 @@ public class TopPortController {
      * @param dreamResult ドリームの運航情報
      * @return
      */
-    private PortStatuses getTargetPortStatus(Port port, Result aneiResult, Result ykfResult, Result dreamResult) {
+    private PortStatus getTargetPortStatus(Port port, Result aneiResult, Result ykfResult, Result dreamResult) {
 
-        PortStatuses portStatuses = new PortStatuses();
+        PortStatus portStatuses = new PortStatus();
         portStatuses.setPort(port);
         HashMap<Company, Liner> portStatus = new HashMap<>();
         Liner liner;

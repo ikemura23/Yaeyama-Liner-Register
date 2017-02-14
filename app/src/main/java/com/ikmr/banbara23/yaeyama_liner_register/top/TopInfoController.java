@@ -7,8 +7,8 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.Liner;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.Result;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.TopInfo;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.company.CompanyStatusInfo;
+import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatus;
 import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatusInfo;
-import com.ikmr.banbara23.yaeyama_liner_register.entity.top.port.PortStatuses;
 import com.ikmr.banbara23.yaeyama_liner_register.util.CashUtil;
 import com.ikmr.banbara23.yaeyama_liner_register.util.PreferenceUtils;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -67,38 +67,7 @@ public class TopInfoController {
     private CompanyStatusInfo createCompanyStatuses(Result aneiResult, Result ykfResult, Result dreamResult) {
         return new TopCompanyController(aneiResult, ykfResult, dreamResult)
                 .createCompanyStatuses();
-//        CompanyStatusInfo companyStatusInfo = new CompanyStatusInfo();
-//
-//        // 安栄
-//        companyStatusInfo.setAneiStatus(createCompanyStatus(aneiResult));
-//        // Ykf
-//        companyStatusInfo.setYkfStatus(createCompanyStatus(ykfResult));
-//        // ドリーム
-//        companyStatusInfo.setDreamStatus(createCompanyStatus(dreamResult));
-//
-//        return companyStatusInfo;
     }
-
-//    private CompanyStatus createCompanyStatus(Result result) {
-//        if (result == null) return null;
-//        CompanyStatus companyStatus = new CompanyStatus();
-//        companyStatus.setCompany(result.getCompany());
-//        companyStatus.setStatus(getStatus(result.getLiners()));
-//        return companyStatus;
-//    }
-//
-//    private Status getStatus(List<Liner> liners) {
-//        for (Liner liner : liners) {
-//            if (liner.getStatus() == Status.CANCEL) {
-//                return Status.CANCEL;    // １件でも欠航があればその会社は「欠航あり」
-//            } else if (liner.getStatus() == Status.SUSPEND) {
-//                return Status.SUSPEND;   // １件でも運休があればその会社は「未定あり」
-//            } else if (liner.getStatus() == Status.CAUTION) {
-//                return Status.CAUTION;   // １件でも未定があればその会社は「未定あり」
-//            }
-//        }
-//        return Status.NORMAL;   // 通常運航
-//    }
 
     /**
      * 港別の運航情報を作成
@@ -113,50 +82,6 @@ public class TopInfoController {
                 .createTopPortInfo();
     }
 
-//    /**
-//     * 指定した港の運航情報を取得
-//     *
-//     * @param targetPort  欲しい港
-//     * @param aneiLiners  安栄
-//     * @param ykfLiners   YKF
-//     * @param dreamLiners ドリーム
-//     * @return
-//     */
-//    private PortStatuses createPortStatus(Port targetPort, List<Liner> aneiLiners, List<Liner> ykfLiners, List<Liner> dreamLiners) {
-//        PortStatuses portStatuses = new PortStatuses();
-//        portStatuses.setPort(targetPort);
-//
-//        Status anneiStatus = getTargetPortStatus(targetPort, aneiLiners);
-//        Status ykfStatus = getTargetPortStatus(targetPort, ykfLiners);
-//        Status dreamStatus = getTargetPortStatus(targetPort, dreamLiners);
-//
-//        if (anneiStatus == Status.CANCEL || ykfStatus == Status.CANCEL || dreamStatus == Status.CANCEL) {
-//            portStatuses.setStatus(Status.CANCEL);
-//        } else if (anneiStatus == Status.CAUTION || ykfStatus == Status.CAUTION || dreamStatus == Status.CAUTION) {
-//            portStatuses.setStatus(Status.CAUTION);
-//        } else {
-//            portStatuses.setStatus(Status.NORMAL);
-//        }
-//        return portStatuses;
-//    }
-
-//    /**
-//     * 引数の会社配列から指定した港の運航情報を取得
-//     *
-//     * @param targetPort 対象港
-//     * @param liners     運航情報
-//     * @return 運航情報
-//     */
-//    private Status getTargetPortStatus(Port targetPort, List<Liner> liners) {
-//        if (liners == null || liners.isEmpty()) return null;
-//        for (Liner liner : liners) {
-//            if (liner.getPort() == targetPort) {
-//                return liner.getStatus();
-//            }
-//        }
-//        return null;
-//    }
-
     /**
      * トップ情報の送信
      *
@@ -168,17 +93,18 @@ public class TopInfoController {
             // 前回と同じ値
             return;
         }
-        Map<String, String> test = new HashMap<>();
-        test.put("port", "UEHARA");
-        test.put("status", "NORMAL");
-        test.put("comment", "通常運航");
         NCMBObject obj = new NCMBObject("TopInfo");
+
+        // 会社別のステータス -----------------------
+
         // 安栄
         obj.put("company_anei_status_type", topInfo.getCompanyStatusInfo().getAneiStatus().getStatus().getType());
         // YKF
         obj.put("company_ykf_status_type", topInfo.getCompanyStatusInfo().getYkfStatus().getStatus().getType());
         // ドリーム
         obj.put("company_dream_status_type", topInfo.getCompanyStatusInfo().getDreamStatus().getStatus().getType());
+
+        // 港別のステータス -----------------------
 
         // 竹富
         obj.put("port_taketomi_status_type", convertHashMap(topInfo.getPortStatusInfo().getTaketomiStatus()));
@@ -195,34 +121,43 @@ public class TopInfoController {
         // 波照間
         obj.put("port_hateruma_status_type", convertHashMap(topInfo.getPortStatusInfo().getHaterumaStatus()));
 
+        // NCMBへ送信
         try {
             obj.save();
+            // 成功
             Logger.d("topInfo送信成功");
             Logger.json(json);
             SlackController.post("トップ 会社別運航 送信 成功");
         } catch (NCMBException e) {
+            // 失敗
             SlackController.post("トップ 会社別運航 送信 失敗 : " + e.getMessage());
             Logger.e(e.getMessage());
         }
         PreferenceUtils.put(TopInfo.class.getCanonicalName(), json);
     }
 
-    private Map<String, String> convertHashMap(PortStatuses portStatuses) {
+    /**
+     * 港別ステータスをNCMB用にに整形するためHashMap型にする
+     *
+     * @param portStatus 各港別ステータス
+     * @return Ncmb用のHashMap
+     */
+    private Map<String, String> convertHashMap(PortStatus portStatus) {
         Map<String, String> obj = new HashMap<>();
-        if (portStatuses.getPortStatus().containsKey(Company.ANNEI)) {
-            Liner liner = portStatuses.getPortStatus().get(Company.ANNEI);
+        if (portStatus.getPortStatus().containsKey(Company.ANNEI)) {
+            Liner liner = portStatus.getPortStatus().get(Company.ANNEI);
             obj.put("anei_status", liner.getStatus().getType());
             obj.put("anei_comment", liner.getText());
         }
 
-        if (portStatuses.getPortStatus().containsKey(Company.YKF)) {
-            Liner liner = portStatuses.getPortStatus().get(Company.YKF);
+        if (portStatus.getPortStatus().containsKey(Company.YKF)) {
+            Liner liner = portStatus.getPortStatus().get(Company.YKF);
             obj.put("ykf_status", liner.getStatus().getType());
             obj.put("ykf_comment", liner.getText());
         }
 
-        if (portStatuses.getPortStatus().containsKey(Company.DREAM)) {
-            Liner liner = portStatuses.getPortStatus().get(Company.DREAM);
+        if (portStatus.getPortStatus().containsKey(Company.DREAM)) {
+            Liner liner = portStatus.getPortStatus().get(Company.DREAM);
             obj.put("dream_status", liner.getStatus().getType());
             obj.put("dream_comment", liner.getText());
         }

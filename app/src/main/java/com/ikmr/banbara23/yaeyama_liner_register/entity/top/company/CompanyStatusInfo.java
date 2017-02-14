@@ -1,5 +1,8 @@
 package com.ikmr.banbara23.yaeyama_liner_register.entity.top.company;
 
+/**
+ * トップの会社別運航情報
+ */
 public class CompanyStatusInfo {
     public CompanyStatusInfo() {
     }

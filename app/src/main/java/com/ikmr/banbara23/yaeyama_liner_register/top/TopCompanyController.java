@@ -8,17 +8,32 @@ import com.ikmr.banbara23.yaeyama_liner_register.entity.top.company.CompanyStatu
 
 import java.util.List;
 
+/**
+ * トップの会社別運航情報を作成
+ */
 public class TopCompanyController {
     private Result aneiResult;
     private Result ykfResult;
     private Result dreamResult;
 
+    /**
+     * コンストラクタ
+     *
+     * @param aneiResult
+     * @param ykfResult
+     * @param dreamResult
+     */
     public TopCompanyController(Result aneiResult, Result ykfResult, Result dreamResult) {
         this.aneiResult = aneiResult;
         this.ykfResult = ykfResult;
         this.dreamResult = dreamResult;
     }
 
+    /**
+     * 全会社の運航状態の作成
+     *
+     * @return 全会社の運航状態クラス
+     */
     public CompanyStatusInfo createCompanyStatuses() {
         CompanyStatusInfo companyStatusInfo = new CompanyStatusInfo();
 
@@ -32,6 +47,12 @@ public class TopCompanyController {
         return companyStatusInfo;
     }
 
+    /**
+     * 各会社別の運航情報を作成
+     *
+     * @param result
+     * @return
+     */
     private CompanyStatus createCompanyStatus(Result result) {
         if (result == null) return null;
         CompanyStatus companyStatus = new CompanyStatus();
@@ -40,6 +61,12 @@ public class TopCompanyController {
         return companyStatus;
     }
 
+    /**
+     * ステータス判定
+     *
+     * @param liners
+     * @return
+     */
     private Status getStatus(List<Liner> liners) {
         for (Liner liner : liners) {
             if (liner.getStatus() == Status.CANCEL) {
