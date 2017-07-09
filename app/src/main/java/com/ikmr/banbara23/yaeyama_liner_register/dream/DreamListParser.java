@@ -247,8 +247,8 @@ public class DreamListParser {
         list.add(Port.KUROSHIMA);
         list.add(Port.OOHARA);
         list.add(Port.HATOMA_UEHARA);
-        list.add(Port.PREMIUM_DREAM);
-        list.add(Port.SUPER_DREAM);
+//        list.add(Port.PREMIUM_DREAM);
+//        list.add(Port.SUPER_DREAM);
         return list;
     }
 }
